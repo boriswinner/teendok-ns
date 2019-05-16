@@ -18,6 +18,20 @@
       return {
         msg: 'Hello World!'
       }
+    },
+    methods: {
+      onDateSelected(args) {
+        console.log("onDateSelected: " + args.date);
+        this.pushNote(args.date, "aaa")
+      },         
+      pushNote(tdate, tnote) {
+        let t = {
+          date: tdate,
+          note: tnote
+        }
+        this.$store.commit('addNote', t)
+        console.log(this.$store.state.notes)
+      }
     }
   }
 </script>
