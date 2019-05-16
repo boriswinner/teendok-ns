@@ -22,7 +22,7 @@
   }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
     ActionBar {
         background-color: #53ba82;
         color: #ffffff;
@@ -33,5 +33,12 @@
         text-align: center;
         font-size: 20;
         color: #333333;
+    }
+
+    .home {
+
+      &__calendar {
+        height: 50%;
+      }
     }
 </style>
