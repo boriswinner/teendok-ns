@@ -26,13 +26,13 @@
       }
     },
     computed: {
-      calendarEvents (){
-        return this.$store.state.notes
-      }
+      // calendarEvents (){
+      //   return this.$store.state.notes
+      // }
     },
     data () {
       return {
-        calEv: [],
+        calendarEvents: [],
       }
     },
     methods: {
@@ -42,31 +42,42 @@
       },         
       pushNote(tdate, tnote) {
         let t = {
-          startDate: tdate,
-          endDate: tdate,
+          startDate: new Date(tdate.getFullYear(), tdate.getMonth(), tdate.getDate(), 1),
+          endDate: new Date(tdate.getFullYear(), tdate.getMonth(), tdate.getDate(), 3),
           note: tnote
         }
-        this.$store.commit('addNote', t)
-        // console.log(this.$store.state.notes)
+        console.log(t.startDate)
+        let events = []
+        let event = new calendarModule.CalendarEvent("event ", t.startDate, t.endDate, false);
+        events.push(event)
+        events.push(event)
+        //this.$store.commit('addNote', event)
+        // events.push(event)
+         //this.$store.state.notes = [event]
+        this.calendarEvents = this.calendarEvents.concat([event])
+        console.log("notes")
+        console.log(this.$store.state.notes)
       }
     },
     created() {
-    let events = [];
-    let now = new Date();
-    let startDate;
-    let endDate;
-    let event;
-    for (let i = 1; i < 10; i++) {
-      startDate = new Date(now.getFullYear(), now.getMonth(), i * 2, 1);
-      endDate = new Date(now.getFullYear(), now.getMonth(), (i * 2), 3);
-      event = new calendarModule.CalendarEvent("event " + i, startDate, endDate, false);
-      events.push(event);
-      if (i % 3 == 0) {
-        event = new calendarModule.CalendarEvent("second " + i, startDate, endDate, true);
-        events.push(event);
-      }
-    }
-    this.$store.state.notes = events;
+      // let events = [];
+      // let now = new Date();
+      // let startDate;
+      // let endDate;
+      // let event;
+      // for (let i = 1; i < 2; i++) {
+      //   startDate = new Date(now.getFullYear(), now.getMonth(), i * 2, 1);
+      //   console.log(startDate)
+      //   endDate = new Date(now.getFullYear(), now.getMonth(), (i * 2), 3);
+      //   event = new calendarModule.CalendarEvent("event " + i, startDate, endDate, false);
+      //   events.push(event);
+      //   if (i % 3 == 0) {
+      //     event = new calendarModule.CalendarEvent("second " + i, startDate, endDate, true);
+      //     events.push(event);
+      //   }
+      // }
+      // this.$store.state.notes = events;
+      // console.log(this.$store.state.notes)
     }
   }
 </script>
