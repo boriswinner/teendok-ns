@@ -26,13 +26,13 @@
       }
     },
     computed: {
-      // calendarEvents (){
-      //   return this.$store.state.notes
-      // }
+      calendarEvents (){
+        return this.$store.state.notes
+      }
     },
     data () {
       return {
-        calendarEvents: [],
+        // calendarEvents: [],
       }
     },
     methods: {
@@ -53,8 +53,8 @@
         events.push(event)
         //this.$store.commit('addNote', event)
         // events.push(event)
-         //this.$store.state.notes = [event]
-        this.calendarEvents = this.calendarEvents.concat([event])
+        this.$store.state.notes = this.$store.state.notes.concat([event])
+        // this.calendarEvents = this.calendarEvents.concat([event])
         console.log("notes")
         console.log(this.$store.state.notes)
       }
