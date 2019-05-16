@@ -1,9 +1,14 @@
 <template>
     <Page>
-        <ActionBar title="Welcome to NativeScript-Vue!"/>
-        <GridLayout columns="*" rows="*">
-            <Label class="message" :text="msg" col="0" row="0"/>
-        </GridLayout>
+        <ActionBar title="teenDok"/>
+        <StackLayout backgroundColor="#3c495e">
+          <RadCalendar class="home__calendar"
+              @dateSelected="onDateSelected"
+          ></RadCalendar>      
+          <Label text="engines" height="70" backgroundColor="#43b883"/>
+          <Label text="second" height="70" backgroundColor="#289062"/>
+          <Label text="third" height="70" backgroundColor="#1c6b48"/>
+        </StackLayout>    
     </Page>
 </template>
 

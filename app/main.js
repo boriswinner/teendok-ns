@@ -4,6 +4,8 @@ import store from './store';
 
 import VueDevtools from 'nativescript-vue-devtools'
 
+Vue.registerElement('RadCalendar', () => require('nativescript-ui-calendar').RadCalendar)
+
 if(TNS_ENV !== 'production') {
   Vue.use(VueDevtools)
 }
