@@ -18,7 +18,7 @@
           <StackLayout verticalAlignment="center">
             <Label v-if="isCreatingNewNote" class="home__time-picker-label" text="Время конца" />
           </StackLayout>     
-          <TimePicker v-if="isCreatingNewNote" class="home__time-picker" v-model="newNoteStartTime" />  
+          <TimePicker v-if="isCreatingNewNote" class="home__time-picker" v-model="newNoteEndTime" />  
           <TextField v-model="newNoteText" class="home__new-note-text" @focus="isCreatingNewNote = true" hint="Создать новую заметку..." />
           <Button text="+" class="home__new-note-button" @tap="createNewNote"/>
         </WrapLayout>    
@@ -40,28 +40,27 @@
       calendarEvents (){
         return this.$store.state.notes
       },
-      // todayNotes (){
-      //   let vi = this;
-      //   let t = this.calendarEvents.filter(function (evt) {
-      //     // adding + is a hack to compare dates, also we dont handle timezones
-      //     return +vi.dateWithoutTime(evt.startDate) === +vi.dateWithoutTime()
-      //   })
-      //   console.log(t.length)        
-      // }
-      selectedDay() {
-        return frameModule.topmost().getViewById("calendar").selectedDate
-      },
-      selectedDayNotes() {
-
-      },
+      selectedDayNotes (){
+        let vi = this;
+        let t = this.calendarEvents.filter(function (evt) {
+          // adding + is a hack to compare dates, also we dont handle timezones
+          return +vi.dateWithoutTime(evt.startDate) === +vi.dateWithoutTime(this.selectedDay)
+        })
+      }
     },
     data () {
       return {
-        // calendarEvents: [],
         newNoteText: null,
-        newNoteStartTime: null,
-        newNoteEndTime: null,
+        newNoteStartTime: {
+          type: Date,
+        },
+        newNoteEndTime: {
+          type: Date,
+        },
         isCreatingNewNote: false,
+        selectedDay: {
+          type: Date,
+        }
       }
     },
     methods: {
@@ -71,41 +70,32 @@
         return d;        
       },
       onDateSelected(args) {
-        // console.log("onDateSelected: " + args.date);
-        let vi = this;
-        this.pushNote(args.date, "ccc")
-        let t = this.calendarEvents.filter(function (evt) {
-          // adding + is a hack to compare dates, also we dont handle timezones
-          return +vi.dateWithoutTime(evt.startDate) === +vi.dateWithoutTime(args.date)
-        })
-        //console.log(t.length)
-        let calendar = frameModule.topmost().getViewById("calendar");
-        //console.log(calendar.getEventsForDate(args.date).length)
-        console.log(this.selectedDay)
+        this.selectedDay = args.date
       },         
       createNewNote(){
-        //console.log(this.newNoteText)
-      },
-      pushNote(tdate, tnote) {
-        let t = {
-          startDate: new Date(tdate.getFullYear(), tdate.getMonth(), tdate.getDate(), 1),
-          endDate: new Date(tdate.getFullYear(), tdate.getMonth(), tdate.getDate(), 3),
-          note: tnote
+        if (this.isCreatingNewNote){
+          this.pushNote(this.selectedDay, this.newNoteStartTime, this.newNoteEndTime, this.newNoteText)
+          this.isCreatingNewNote = false
+        } else {
+          console.log("ЕГГОГ")
         }
-        //console.log(t.startDate)
-        let events = []
-        let event = new calendarModule.CalendarEvent("event ", t.startDate, t.endDate, false);
-        events.push(event)
-        events.push(event)
-        //this.$store.commit('addNote', event)
-        // events.push(event)
+      },
+      pushNote(tDate, tStartTime, tEndTime, tNoteText) {
+        let t = {
+          startDate: new Date(tDate.getFullYear(), tDate.getMonth(), tDate.getDate(), tStartTime.getHours(), tStartTime.getMinutes()),
+          endDate: new Date(tDate.getFullYear(), tDate.getMonth(), tDate.getDate(), tEndTime.getHours(), tEndTime.getMinutes()),
+          noteText: tNoteText
+        }
+        let event = new calendarModule.CalendarEvent(t.noteText, t.startDate, t.endDate, false);
         this.$store.state.notes = this.$store.state.notes.concat([event])
-        // this.calendarEvents = this.calendarEvents.concat([event])
         console.log("notes")
         console.log(this.$store.state.notes)
       }
     },
     created() {
+      this.selectedDay = new Date();
+      this.newNoteStartTime = new Date();
+      this.newNoteEndTime = new Date();
       // let events = [];
       // let now = new Date();
       // let startDate;
