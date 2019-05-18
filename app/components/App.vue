@@ -4,7 +4,7 @@
         <WrapLayout backgroundColor="#3c495e">
           <RadCalendar 
             v-if="!isCreatingNewNote"
-            class="home__calendar" id="calendar"
+            class="home__calendar" id="calendar" ref="calendar"
             @dateSelected="onDateSelected"
             :eventSource="calendarEvents"
             eventsViewMode="Inline" 
@@ -27,6 +27,8 @@
 
 <script >
   import * as calendarModule from 'nativescript-ui-calendar';
+  import * as frameModule from "tns-core-modules/ui/frame";
+  import * as observableModule from "tns-core-modules/data/observable";
 
   export default {
     data() {
@@ -37,7 +39,21 @@
     computed: {
       calendarEvents (){
         return this.$store.state.notes
-      }
+      },
+      // todayNotes (){
+      //   let vi = this;
+      //   let t = this.calendarEvents.filter(function (evt) {
+      //     // adding + is a hack to compare dates, also we dont handle timezones
+      //     return +vi.dateWithoutTime(evt.startDate) === +vi.dateWithoutTime()
+      //   })
+      //   console.log(t.length)        
+      // }
+      selectedDay() {
+        return frameModule.topmost().getViewById("calendar").selectedDate
+      },
+      selectedDayNotes() {
+
+      },
     },
     data () {
       return {
@@ -49,12 +65,26 @@
       }
     },
     methods: {
+      dateWithoutTime (date){
+        var d = new Date(date);
+        d.setHours(0, 0, 0, 0);
+        return d;        
+      },
       onDateSelected(args) {
         // console.log("onDateSelected: " + args.date);
+        let vi = this;
         this.pushNote(args.date, "ccc")
+        let t = this.calendarEvents.filter(function (evt) {
+          // adding + is a hack to compare dates, also we dont handle timezones
+          return +vi.dateWithoutTime(evt.startDate) === +vi.dateWithoutTime(args.date)
+        })
+        //console.log(t.length)
+        let calendar = frameModule.topmost().getViewById("calendar");
+        //console.log(calendar.getEventsForDate(args.date).length)
+        console.log(this.selectedDay)
       },         
       createNewNote(){
-        console.log(this.newNoteText)
+        //console.log(this.newNoteText)
       },
       pushNote(tdate, tnote) {
         let t = {
@@ -62,7 +92,7 @@
           endDate: new Date(tdate.getFullYear(), tdate.getMonth(), tdate.getDate(), 3),
           note: tnote
         }
-        console.log(t.startDate)
+        //console.log(t.startDate)
         let events = []
         let event = new calendarModule.CalendarEvent("event ", t.startDate, t.endDate, false);
         events.push(event)
