@@ -3,7 +3,7 @@
         <ActionBar title="teenDok"/>
         <WrapLayout backgroundColor="#3c495e">
           <RadCalendar 
-            v-if="!isCreatingNewNote"
+            v-show="!isCreatingNewNote"
             class="home__calendar" id="calendar" ref="calendar"
             @dateSelected="onDateSelected"
             :eventSource="calendarEvents"
