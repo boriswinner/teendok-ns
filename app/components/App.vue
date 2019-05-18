@@ -1,20 +1,27 @@
 <template>
     <Page>
         <ActionBar title="teenDok"/>
-        <StackLayout backgroundColor="#3c495e">
-          <RadCalendar class="home__calendar" id="calendar"
-              @dateSelected="onDateSelected"
-              :eventSource="calendarEvents"
-              eventsViewMode="Inline" 
-              selectionMode="Single" 
-              viewMode="Month"              
-          ></RadCalendar>      
-          <Label text="engines" height="70" backgroundColor="#43b883"/>
-          <Label text="second" height="70" backgroundColor="#289062"/>
-          <Label text="third" height="70" backgroundColor="#1c6b48"/>
-          <TextField v-model="newNoteText" hint="Создать новую заметку..." />
-          <Button text="Button" @tap="createNewNote"/>
-        </StackLayout>    
+        <WrapLayout backgroundColor="#3c495e">
+          <RadCalendar 
+            v-if="!isCreatingNewNote"
+            class="home__calendar" id="calendar"
+            @dateSelected="onDateSelected"
+            :eventSource="calendarEvents"
+            eventsViewMode="Inline" 
+            selectionMode="Single" 
+            viewMode="Month"              
+          ></RadCalendar>    
+          <StackLayout verticalAlignment="center">
+            <Label v-if="isCreatingNewNote" class="home__time-picker-label" text="Время начала" />
+          </StackLayout>          
+          <TimePicker v-if="isCreatingNewNote" class="home__time-picker" v-model="newNoteStartTime" />
+          <StackLayout verticalAlignment="center">
+            <Label v-if="isCreatingNewNote" class="home__time-picker-label" text="Время конца" />
+          </StackLayout>     
+          <TimePicker v-if="isCreatingNewNote" class="home__time-picker" v-model="newNoteStartTime" />  
+          <TextField v-model="newNoteText" class="home__new-note-text" @focus="isCreatingNewNote = true" hint="Создать новую заметку..." />
+          <Button text="+" class="home__new-note-button" @tap="createNewNote"/>
+        </WrapLayout>    
     </Page>
 </template>
 
@@ -35,7 +42,10 @@
     data () {
       return {
         // calendarEvents: [],
-        newNoteText: null
+        newNoteText: null,
+        newNoteStartTime: null,
+        newNoteEndTime: null,
+        isCreatingNewNote: false,
       }
     },
     methods: {
@@ -104,7 +114,25 @@
     .home {
 
       &__calendar {
-        height: 50%;
+        width: 100%;
+        height: 40%;
+      }
+
+      &__time-picker-label {
+        width: 40%;
+      }
+
+      &__time-picker {
+        height: 20%;
+        width: 60%;
+      }
+
+      &__new-note-text {
+        width: 90%;
+      }
+
+      &__new-note-button{
+        width: 10%;
       }
     }
 </style>
