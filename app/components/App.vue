@@ -12,6 +12,8 @@
           <Label text="engines" height="70" backgroundColor="#43b883"/>
           <Label text="second" height="70" backgroundColor="#289062"/>
           <Label text="third" height="70" backgroundColor="#1c6b48"/>
+          <TextField v-model="newNoteText" hint="Создать новую заметку..." />
+          <Button text="Button" @tap="createNewNote"/>
         </StackLayout>    
     </Page>
 </template>
@@ -33,6 +35,7 @@
     data () {
       return {
         // calendarEvents: [],
+        newNoteText: null
       }
     },
     methods: {
@@ -40,6 +43,9 @@
         // console.log("onDateSelected: " + args.date);
         this.pushNote(args.date, "ccc")
       },         
+      createNewNote(){
+        console.log(this.newNoteText)
+      },
       pushNote(tdate, tnote) {
         let t = {
           startDate: new Date(tdate.getFullYear(), tdate.getMonth(), tdate.getDate(), 1),
