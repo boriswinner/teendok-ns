@@ -34,6 +34,9 @@
   import * as calendarModule from 'nativescript-ui-calendar';
   import * as frameModule from "tns-core-modules/ui/frame";
   import * as observableModule from "tns-core-modules/data/observable";
+  import * as utils from "utils/utils";
+  import { isIOS, isAndroid } from "platform";
+  import * as frame from "ui/frame";
 
   export default {
     data() {
@@ -69,6 +72,14 @@
       }
     },
     methods: {
+      dismissSoftKeyboard(){
+        if (isIOS) {
+            frame.topmost().nativeView.endEditing(true);
+        }
+        if (isAndroid) {
+          utils.ad.dismissSoftInput();
+        }    
+      },  
       dateWithoutTime (date){
         var d = new Date(date);
         d.setHours(0, 0, 0, 0);
@@ -81,6 +92,7 @@
         this.isCreatingNewNote = false
         //lose focus on main textEdit
         this.$refs.dummy.nativeView.focus()
+        this.dismissSoftKeyboard()
       },
       createNewNote(){
         if (this.isCreatingNewNote){
