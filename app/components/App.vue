@@ -1,7 +1,7 @@
 <template>
     <Page>
         <ActionBar title="teenDok">
-          <NavigationButton v-show="isCreatingNewNote" text="Назад" android.systemIcon="ic_menu_back" @tap="cancelCreateNewNote" />          
+          <NavigationButton v-show="isCreatingNewNote" text="Назад" android.systemIcon="ic_menu_back" @tap="createNewNoteRevertUIState" />          
         </ActionBar>
         <WrapLayout backgroundColor="#3c495e">
           <RadCalendar 
@@ -21,7 +21,8 @@
             <Label v-if="isCreatingNewNote" class="home__time-picker-label" text="Время конца" />
           </StackLayout>     
           <TimePicker v-if="isCreatingNewNote" class="home__time-picker" v-model="newNoteEndTime" />  
-          <TextField ref="newNoteField" v-model="newNoteText" class="home__new-note-text" @focus="isCreatingNewNote = true" hint="Создать новую заметку..." />
+          <TextField ref="newNoteField" v-model="newNoteText" class="home__new-note-text" 
+            @focus="isCreatingNewNote = true" @returnPress = "createNewNote" hint="Создать новую заметку..." />
           <Button text="+" class="home__new-note-button" @tap="createNewNote"/>
 
           <!-- this thing is for losing focus on textedit -->
@@ -88,16 +89,17 @@
       onDateSelected(args) {
         this.selectedDay = args.date
       },         
-      cancelCreateNewNote(){
+      createNewNoteRevertUIState(){
         this.isCreatingNewNote = false
         //lose focus on main textEdit
         this.$refs.dummy.nativeView.focus()
+        this.newNoteText = ""
         this.dismissSoftKeyboard()
       },
       createNewNote(){
         if (this.isCreatingNewNote){
           this.pushNote(this.selectedDay, this.newNoteStartTime, this.newNoteEndTime, this.newNoteText)
-          this.isCreatingNewNote = false
+          this.createNewNoteRevertUIState()
         } else {
           console.log("ЕГГОГ")
         }
