@@ -26,7 +26,11 @@
           <Button text="+" class="home__new-note-button" @tap="createNewNote"/>
           <ListView for="event in selectedDayNotes" class="home__notes-list">
             <v-template>
-              <Label :text="event.title" />
+              <WrapLayout class="home__notes-list-item">
+                <Label class="home__notes-list-item-note" :text="event.title" />
+                <Label class="home__notes-list-item-time" :text="event.startDate.getHours() + ' ' + event.startDate.getMinutes() + ' - '" />
+                <Label class="home__notes-list-item-time" :text="event.endDate.getHours() + ' ' + event.endDate.getMinutes()" />
+              </WrapLayout>
             </v-template>
           </ListView>          
           <!-- this thing is for losing focus on textedit -->
@@ -182,5 +186,19 @@
       &__new-note-button{
         width: 10%;
       }
+
+      &__notes-list-item {
+        background: white;
+      }
+
+      &__notes-list-item-note {
+        font-size: 15px;
+        width: 100%;
+      }
+
+      &__notes-list-item-time {
+        font-size: 18px;
+        font-weight: 600;
+      }      
     }
 </style>
