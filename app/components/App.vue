@@ -24,7 +24,11 @@
           <TextField ref="newNoteField" v-model="newNoteText" class="home__new-note-text" 
             @focus="isCreatingNewNote = true" @returnPress = "createNewNote" hint="Создать новую заметку..." />
           <Button text="+" class="home__new-note-button" @tap="createNewNote"/>
-
+          <ListView for="event in selectedDayNotes" class="home__notes-list">
+            <v-template>
+              <Label :text="event.title" />
+            </v-template>
+          </ListView>          
           <!-- this thing is for losing focus on textedit -->
           <TextField ref="dummy" height="0" id="dummy"></TextField>
         </WrapLayout>    
@@ -51,9 +55,9 @@
       },
       selectedDayNotes (){
         let vi = this;
-        let t = this.calendarEvents.filter(function (evt) {
+        return this.calendarEvents.filter(function (evt) {
           // adding + is a hack to compare dates, also we dont handle timezones
-          return +vi.dateWithoutTime(evt.startDate) === +vi.dateWithoutTime(this.selectedDay)
+          return +vi.dateWithoutTime(evt.startDate) === +vi.dateWithoutTime(vi.selectedDay)
         })
       }
     },
