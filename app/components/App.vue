@@ -4,15 +4,28 @@
           <NavigationButton v-show="isCreatingNewNote" text="Назад" android.systemIcon="ic_menu_back" @tap="createNewNoteRevertUIState" />          
         </ActionBar>
         <WrapLayout backgroundColor="#3c495e">
+          <SegmentedBar class="home__calendar-mode-bar" @selectedIndexChange="changeCalendarMode">
+            <SegmentedBarItem title="Месяц" />
+            <SegmentedBarItem title="Неделя" />
+          </SegmentedBar>          
           <RadCalendar 
-            v-show="!isCreatingNewNote"
-            class="home__calendar" id="calendar" ref="calendar"
+            v-show="!isCreatingNewNote && calendarMode === 0"
+            class="home__calendar" id="calendarDay" ref="calendarDay"
             @dateSelected="onDateSelected"
             :eventSource="calendarEvents"
             eventsViewMode="None" 
             selectionMode="Single" 
             viewMode="Month"              
-          ></RadCalendar>    
+          ></RadCalendar>  
+          <RadCalendar 
+            v-show="!isCreatingNewNote && calendarMode === 1"
+            class="home__calendar" id="calendarWeek" ref="calendarWeek"
+            @dateSelected="onDateSelected"
+            :eventSource="calendarEvents"
+            eventsViewMode="None" 
+            selectionMode="Single" 
+            viewMode="Week"              
+          ></RadCalendar>              
           <StackLayout verticalAlignment="center">
             <Label v-if="isCreatingNewNote" class="home__time-picker-label" text="Время начала" />
           </StackLayout>          
@@ -48,13 +61,9 @@
   import * as utils from "utils/utils";
   import { isIOS, isAndroid } from "platform";
   import * as frame from "ui/frame";
+import { type } from 'os';
 
   export default {
-    data() {
-      return {
-        msg: 'Hello World!'
-      }
-    },
     computed: {
       calendarEvents (){
         return this.$store.state.notes
@@ -79,7 +88,10 @@
         isCreatingNewNote: false,
         selectedDay: {
           type: Date,
-        }
+        },
+        calendarMode: {
+          default: 0
+        }        
       }
     },
     methods: {
@@ -95,6 +107,12 @@
         var d = new Date(date);
         d.setHours(0, 0, 0, 0);
         return d;        
+      },
+      changeCalendarMode(bar){
+        this.calendarMode = bar.object.selectedIndex
+        console.log(this.calendarMode)
+        console.log(typeof this.calendarMode)
+        console.log((!this.isCreatingNewNote) && (this.calendarMode == 0))
       },
       onDateSelected(args) {
         this.selectedDay = args.date
@@ -169,6 +187,12 @@
     }
 
     .home {
+
+      &__calendar-mode-bar{
+        height: 10%;
+        background-color: white;
+        width: 100%;
+      }
 
       &__calendar {
         width: 100%;
