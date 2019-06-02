@@ -11,7 +11,7 @@
           </SegmentedBar>          
           <RadCalendar 
             v-show="!isCreatingNewNote && calendarMode === 0"
-            class="home__calendar" id="calendarDay" ref="calendarDay"
+            class="home__calendar" id="calendarMonth" ref="calendarMonth"
             @dateSelected="onDateSelected"
             :eventSource="calendarEvents"
             eventsViewMode="None" 
@@ -20,7 +20,7 @@
           ></RadCalendar>  
           <RadCalendar 
             v-show="!isCreatingNewNote && calendarMode === 1"
-            class="home__calendar-day" id="calendarWeek" ref="calendarWeek"
+            class="home__calendar-week" id="calendarWeek" ref="calendarWeek"
             @dateSelected="onDateSelected"
             :eventSource="calendarEvents"
             eventsViewMode="Inline" 
@@ -29,7 +29,7 @@
           ></RadCalendar> 
           <RadCalendar 
             v-show="!isCreatingNewNote && calendarMode === 2"
-            class="home__calendar-day" id="calendarWeek" ref="calendarWeek"
+            class="home__calendar-day" id="calendarDay" ref="calendarDay"
             @dateSelected="onDateSelected"
             :eventSource="calendarEvents"
             eventsViewMode="Inline" 
@@ -155,6 +155,9 @@ import { type } from 'os';
       },
       tapNote(event){
         console.log(event.item.title)
+      },
+      disableCalendarGestures(event){
+        console.log('disable')
       }
     },
     created() {
@@ -179,7 +182,7 @@ import { type } from 'os';
       // }
       // this.$store.state.notes = events;
       // console.log(this.$store.state.notes)
-    }
+    },
   }
 </script>
 
@@ -208,6 +211,10 @@ import { type } from 'os';
         width: 100%;
         height: 40%;
       }
+
+      &__calendar-week {
+        width: 100%;
+      }            
 
       &__calendar-day {
         width: 100%;
