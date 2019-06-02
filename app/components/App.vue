@@ -24,15 +24,17 @@
           <TextField ref="newNoteField" v-model="newNoteText" class="home__new-note-text" 
             @focus="isCreatingNewNote = true" @returnPress = "createNewNote" hint="Создать новую заметку..." />
           <Button text="+" class="home__new-note-button" @tap="createNewNote"/>
+          <ScrollView class="home__notes-list-wrapper">
           <ListView for="event in selectedDayNotes" class="home__notes-list">
             <v-template>
               <WrapLayout class="home__notes-list-item">
                 <Label class="home__notes-list-item-note" :text="event.title" />
-                <Label class="home__notes-list-item-time" :text="event.startDate.getHours() + ' ' + event.startDate.getMinutes() + ' - '" />
-                <Label class="home__notes-list-item-time" :text="event.endDate.getHours() + ' ' + event.endDate.getMinutes()" />
+                <Label class="home__notes-list-item-time" :text="event.startDate.getHours() + ':' + event.startDate.getMinutes() + ' - '" />
+                <Label class="home__notes-list-item-time" :text="event.endDate.getHours() + ':' + event.endDate.getMinutes()" />
               </WrapLayout>
             </v-template>
-          </ListView>          
+          </ListView> 
+          </ScrollView>         
           <!-- this thing is for losing focus on textedit -->
           <TextField ref="dummy" height="0" id="dummy"></TextField>
         </WrapLayout>    
@@ -185,6 +187,10 @@
 
       &__new-note-button{
         width: 10%;
+      }
+
+      &__notes-list-wrapper {
+        height: 50%;
       }
 
       &__notes-list-item {
