@@ -1,10 +1,12 @@
 import Vue from 'nativescript-vue'
+// import RadListView from 'nativescript-ui-listview/vue';
 import App from './components/App'
 import store from './store';
 
 import VueDevtools from 'nativescript-vue-devtools'
 
 Vue.registerElement('RadCalendar', () => require('nativescript-ui-calendar').RadCalendar)
+// Vue.registerElement('RadListView', () => require('nativescript-ui-listview').RadListView)
 
 if(TNS_ENV !== 'production') {
   Vue.use(VueDevtools)

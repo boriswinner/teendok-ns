@@ -217,7 +217,7 @@ import { type } from 'os';
       }
 
       &__notes-list-wrapper {
-        height: 50%;
+        height: 40%;
       }
 
       &__notes-list-item {
