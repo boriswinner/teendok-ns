@@ -26,7 +26,23 @@
             eventsViewMode="Inline" 
             selectionMode="Single" 
             viewMode="Week"              
-          ></RadCalendar> 
+          ></RadCalendar>     
+          <ScrollView v-if="!isCreatingNewNote && calendarMode === 1" orientation="vertical" class="home__week-wrapper"> 
+            <StackLayout>     
+              <GridLayout columns="*, *, *, *, *, *, *, *" rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *">
+              <Label v-for = "(item, index) in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]" :key="index" :text="item" :row="index" col="0"/>
+              <Label text="0,0" row="0" col="1" backgroundColor="#43b883"/>
+              <Label text="0,0" row="0" col="2" backgroundColor="#23b483"/>
+              <Label text="0,0" row="0" col="3" backgroundColor="#43b883"/>
+              <Label text="0,0" row="0" col="4" backgroundColor="#23b483"/>
+              <Label text="0,0" row="0" col="5" backgroundColor="#43b883"/>
+              <Label text="0,0" row="0" col="6" backgroundColor="#23b483"/>
+              <Label text="0,0" row="0" col="7" backgroundColor="#43b883"/>
+              <Label text="0,0" row="0" col="8" backgroundColor="#23b483"/>                    
+              </GridLayout>
+            </StackLayout>
+          </ScrollView>
+          
           <RadCalendar 
             v-show="!isCreatingNewNote && calendarMode === 2"
             class="home__calendar-day" id="calendarDay" ref="calendarDay"
@@ -44,9 +60,6 @@
             <Label v-if="isCreatingNewNote" class="home__time-picker-label" text="Время конца" />
           </StackLayout>     
           <TimePicker v-if="isCreatingNewNote" class="home__time-picker" v-model="newNoteEndTime" />  
-          <TextField ref="newNoteField" v-model="newNoteText" class="home__new-note-text" 
-            @focus="isCreatingNewNote = true" @returnPress = "createNewNote" hint="Создать новую заметку..." />
-          <Button text="+" class="home__new-note-button" @tap="createNewNote"/>
           <ScrollView v-show="calendarMode === 0 && !isCreatingNewNote" class="home__notes-list-wrapper">
             <ListView for="event in selectedDayNotes" class="home__notes-list" @itemTap="tapNote">
               <v-template>
@@ -57,7 +70,10 @@
                 </WrapLayout>
               </v-template>
             </ListView> 
-          </ScrollView>         
+          </ScrollView>            
+          <TextField ref="newNoteField" v-model="newNoteText" class="home__new-note-text" 
+            @focus="isCreatingNewNote = true" @returnPress = "createNewNote" hint="Создать новую заметку..." />
+          <Button text="+" class="home__new-note-button" @tap="createNewNote"/>       
           <!-- this thing is for losing focus on textedit -->
           <TextField ref="dummy" height="0" id="dummy"></TextField>
         </WrapLayout>    
@@ -213,7 +229,8 @@ import { type } from 'os';
       }
 
       &__calendar-week {
-        width: 100%;
+        width: 87.5%;
+        margin-left: 12.5%;
       }            
 
       &__calendar-day {
@@ -256,5 +273,9 @@ import { type } from 'os';
         font-size: 18px;
         font-weight: 600;
       }      
+
+      &__week-wrapper {
+        height: 50%;
+      }
     }
 </style>
