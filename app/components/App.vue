@@ -29,7 +29,7 @@
           ></RadCalendar>     
           <ScrollView v-if="!isCreatingNewNote && calendarMode === 1" orientation="vertical" class="home__week-wrapper"> 
             <StackLayout>     
-              <GridLayout columns="*, *, *, *, *, *, *, *" rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *">
+              <GridLayout columns="*, *, *, *, *, *, *, *" rows="60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60">
               <Label v-for = "(item, index) in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]" :key="index" :text="item" :row="index" col="0"/>
               <Label text="0,0" row="0" col="1" backgroundColor="#43b883"/>
               <Label text="0,0" row="0" col="2" backgroundColor="#23b483"/>
@@ -96,11 +96,15 @@ import { type } from 'os';
       },
       selectedDayNotes (){
         let vi = this;
-        return this.calendarEvents.filter(function (evt) {
+        let t =  this.calendarEvents.filter(function (evt) {
           // adding + is a hack to compare dates, also we dont handle timezones
           return +vi.dateWithoutTime(evt.startDate) === +vi.dateWithoutTime(vi.selectedDay)
         })
-      }
+        return t
+      },
+      selectedWeekDays (){
+        return this.sameWeekDates(this.selectedDay)
+      },
     },
     data () {
       return {
@@ -134,14 +138,30 @@ import { type } from 'os';
         d.setHours(0, 0, 0, 0);
         return d;        
       },
+      sameWeekDates(current) {
+          var week= new Array(); 
+          current.setDate((current.getDate() - current.getDay() +1));
+          for (var i = 0; i < 7; i++) {
+              week.push(
+                  new Date(current)
+              ); 
+              current.setDate(current.getDate() +1);
+          }
+          return week; 
+      },
+      getNotesOfDay(day) {
+        let vi = this;
+        return this.calendarEvents.filter(function (evt) {
+          // adding + is a hack to compare dates, also we dont handle timezones
+          return +vi.dateWithoutTime(evt.startDate) === +vi.dateWithoutTime(day)
+        })
+      },
       changeCalendarMode(bar){
         this.calendarMode = bar.object.selectedIndex
-        console.log(this.calendarMode)
-        console.log(typeof this.calendarMode)
-        console.log((!this.isCreatingNewNote) && (this.calendarMode == 0))
       },
       onDateSelected(args) {
         this.selectedDay = args.date
+        // console.log(this.selectedWeekDays)
       },         
       createNewNoteRevertUIState(){
         this.isCreatingNewNote = false
@@ -166,15 +186,10 @@ import { type } from 'os';
         }
         let event = new calendarModule.CalendarEvent(t.noteText, t.startDate, t.endDate, false);
         this.$store.state.notes = this.$store.state.notes.concat([event])
-        console.log("notes")
-        console.log(this.$store.state.notes)
       },
       tapNote(event){
         console.log(event.item.title)
       },
-      disableCalendarGestures(event){
-        console.log('disable')
-      }
     },
     created() {
       this.selectedDay = new Date();
