@@ -7,6 +7,7 @@
           <SegmentedBar class="home__calendar-mode-bar" @selectedIndexChange="changeCalendarMode">
             <SegmentedBarItem title="Месяц" />
             <SegmentedBarItem title="Неделя" />
+            <SegmentedBarItem title="День" />
           </SegmentedBar>          
           <RadCalendar 
             v-show="!isCreatingNewNote && calendarMode === 0"
@@ -19,13 +20,22 @@
           ></RadCalendar>  
           <RadCalendar 
             v-show="!isCreatingNewNote && calendarMode === 1"
-            class="home__calendar" id="calendarWeek" ref="calendarWeek"
+            class="home__calendar-day" id="calendarWeek" ref="calendarWeek"
             @dateSelected="onDateSelected"
             :eventSource="calendarEvents"
-            eventsViewMode="None" 
+            eventsViewMode="Inline" 
             selectionMode="Single" 
             viewMode="Week"              
-          ></RadCalendar>              
+          ></RadCalendar> 
+          <RadCalendar 
+            v-show="!isCreatingNewNote && calendarMode === 2"
+            class="home__calendar-day" id="calendarWeek" ref="calendarWeek"
+            @dateSelected="onDateSelected"
+            :eventSource="calendarEvents"
+            eventsViewMode="Inline" 
+            selectionMode="Single" 
+            viewMode="Day"              
+          ></RadCalendar>                        
           <StackLayout verticalAlignment="center">
             <Label v-if="isCreatingNewNote" class="home__time-picker-label" text="Время начала" />
           </StackLayout>          
@@ -37,7 +47,7 @@
           <TextField ref="newNoteField" v-model="newNoteText" class="home__new-note-text" 
             @focus="isCreatingNewNote = true" @returnPress = "createNewNote" hint="Создать новую заметку..." />
           <Button text="+" class="home__new-note-button" @tap="createNewNote"/>
-          <ScrollView class="home__notes-list-wrapper">
+          <ScrollView v-show="calendarMode === 0 && !isCreatingNewNote" class="home__notes-list-wrapper">
             <ListView for="event in selectedDayNotes" class="home__notes-list" @itemTap="tapNote">
               <v-template>
                 <WrapLayout class="home__notes-list-item">
@@ -199,6 +209,11 @@ import { type } from 'os';
         height: 40%;
       }
 
+      &__calendar-day {
+        width: 100%;
+        height: 80%;
+      }      
+
       &__time-picker-label {
         width: 40%;
       }
@@ -209,6 +224,7 @@ import { type } from 'os';
       }
 
       &__new-note-text {
+        height: 10%;
         width: 90%;
       }
 
