@@ -25,15 +25,15 @@
             @focus="isCreatingNewNote = true" @returnPress = "createNewNote" hint="Создать новую заметку..." />
           <Button text="+" class="home__new-note-button" @tap="createNewNote"/>
           <ScrollView class="home__notes-list-wrapper">
-          <ListView for="event in selectedDayNotes" class="home__notes-list">
-            <v-template>
-              <WrapLayout class="home__notes-list-item">
-                <Label class="home__notes-list-item-note" :text="event.title" />
-                <Label class="home__notes-list-item-time" :text="event.startDate.getHours() + ':' + event.startDate.getMinutes() + ' - '" />
-                <Label class="home__notes-list-item-time" :text="event.endDate.getHours() + ':' + event.endDate.getMinutes()" />
-              </WrapLayout>
-            </v-template>
-          </ListView> 
+            <ListView for="event in selectedDayNotes" class="home__notes-list" @itemTap="tapNote">
+              <v-template>
+                <WrapLayout class="home__notes-list-item">
+                  <Label class="home__notes-list-item-note" :text="event.title" />
+                  <Label class="home__notes-list-item-time" :text="event.startDate.getHours() + ':' + event.startDate.getMinutes() + ' - '" />
+                  <Label class="home__notes-list-item-time" :text="event.endDate.getHours() + ':' + event.endDate.getMinutes()" />
+                </WrapLayout>
+              </v-template>
+            </ListView> 
           </ScrollView>         
           <!-- this thing is for losing focus on textedit -->
           <TextField ref="dummy" height="0" id="dummy"></TextField>
@@ -124,6 +124,9 @@
         this.$store.state.notes = this.$store.state.notes.concat([event])
         console.log("notes")
         console.log(this.$store.state.notes)
+      },
+      tapNote(event){
+        console.log(event.item.title)
       }
     },
     created() {
