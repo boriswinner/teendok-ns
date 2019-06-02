@@ -9,7 +9,7 @@
             class="home__calendar" id="calendar" ref="calendar"
             @dateSelected="onDateSelected"
             :eventSource="calendarEvents"
-            eventsViewMode="Inline" 
+            eventsViewMode="None" 
             selectionMode="Single" 
             viewMode="Month"              
           ></RadCalendar>    
