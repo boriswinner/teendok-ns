@@ -29,16 +29,9 @@
           ></RadCalendar>     
           <ScrollView v-if="!isCreatingNewNote && calendarMode === 1" orientation="vertical" class="home__week-wrapper"> 
             <StackLayout>     
-              <GridLayout columns="*, *, *, *, *, *, *, *" rows="60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60">
-              <Label v-for = "(item, index) in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]" :key="index" :text="item" :row="index" col="0"/>
-              <Label text="0,0" row="0" col="1" backgroundColor="#43b883"/>
-              <Label text="0,0" row="0" col="2" backgroundColor="#23b483"/>
-              <Label text="0,0" row="0" col="3" backgroundColor="#43b883"/>
-              <Label text="0,0" row="0" col="4" backgroundColor="#23b483"/>
-              <Label text="0,0" row="0" col="5" backgroundColor="#43b883"/>
-              <Label text="0,0" row="0" col="6" backgroundColor="#23b483"/>
-              <Label text="0,0" row="0" col="7" backgroundColor="#43b883"/>
-              <Label text="0,0" row="0" col="8" backgroundColor="#23b483"/>                    
+              <GridLayout backgroundColor="white" columns="*, *, *, *, *, *, *, *" rows="60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60">
+              <Label v-for = "(item, index) in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]" :key="index" :text="item" :row="index" col="0" backgroundColor="#1c6b48"/>
+              <Label v-for= "(item, index) in selectedWeekNotes" class="home__weekview_cell" :key="'event'+index" :col="item.column+1" :row="item.row" :text="item.title" backgroundColor="#43b883" :style="'margin-top: '+item.marginTop+'px;'"/>                    
               </GridLayout>
             </StackLayout>
           </ScrollView>
@@ -89,6 +82,7 @@
   import * as frame from "ui/frame";
 import { type } from 'os';
 
+
   export default {
     computed: {
       calendarEvents (){
@@ -102,9 +96,26 @@ import { type } from 'os';
         })
         return t
       },
-      selectedWeekDays (){
-        return this.sameWeekDates(this.selectedDay)
-      },
+      selectedWeekNotes(){
+        let vi = this
+        let ev = []
+        this.sameWeekDates(this.selectedDay).forEach(function(item, index, arr){
+          let t = vi.getNotesOfDay(item)
+          if (t.length >= 0){
+            for (let i = 0; i < t.length; ++i){
+              ev.push ({
+                column: index,
+                row: t[i].startDate.getHours(),
+                title: t[i].title,
+                marginTop: t[i].startDate.getMinutes(),
+              })
+            }
+          }
+        })
+        console.log('------------')
+        console.log(ev)
+        return ev
+      },      
     },
     data () {
       return {
@@ -139,20 +150,28 @@ import { type } from 'os';
         return d;        
       },
       sameWeekDates(current) {
-          var week= new Array(); 
-          current.setDate((current.getDate() - current.getDay() +1));
-          for (var i = 0; i < 7; i++) {
-              week.push(
-                  new Date(current)
-              ); 
-              current.setDate(current.getDate() +1);
-          }
-          return week; 
+        var week= new Array(); 
+        let t = new Date(current);
+        let day = current.getDay()
+        if (day == 0){
+          day = 7
+        }
+        day--
+        t.setDate((current.getDate() - day));
+        for (var i = 0; i < 7; i++) {
+            week.push(
+                new Date(t)
+            ); 
+            t.setDate(t.getDate() +1);
+        }
+        return week;        
       },
       getNotesOfDay(day) {
         let vi = this;
         return this.calendarEvents.filter(function (evt) {
           // adding + is a hack to compare dates, also we dont handle timezones
+          console.log(vi.dateWithoutTime(evt.startDate))
+          console.log(vi.dateWithoutTime(day))
           return +vi.dateWithoutTime(evt.startDate) === +vi.dateWithoutTime(day)
         })
       },
@@ -291,6 +310,10 @@ import { type } from 'os';
 
       &__week-wrapper {
         height: 50%;
+      }
+
+      &__weekview_cell {
+        height: 20%;
       }
     }
 </style>
