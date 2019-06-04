@@ -3,7 +3,7 @@
         <ActionBar title="teenDok">
           <NavigationButton v-show="isCreatingNewNote" text="Назад" android.systemIcon="ic_menu_back" @tap="createNewNoteRevertUIState" />          
         </ActionBar>
-        <WrapLayout backgroundColor="#3c495e">
+        <WrapLayout backgroundColor="white">
           <SegmentedBar class="home__calendar-mode-bar" @selectedIndexChange="changeCalendarMode">
             <SegmentedBarItem title="Месяц" />
             <SegmentedBarItem title="Неделя" />
@@ -30,8 +30,8 @@
           <ScrollView v-if="!isCreatingNewNote && calendarMode === 1" orientation="vertical" class="home__week-wrapper"> 
             <StackLayout>     
               <GridLayout backgroundColor="white" columns="*, *, *, *, *, *, *, *" rows="60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60">
-              <Label v-for = "(item, index) in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]" :key="index" :text="item" :row="index" col="0" backgroundColor="#1c6b48"/>
-              <Label v-for= "(item, index) in selectedWeekNotes" class="home__weekview_cell" :key="'event'+index" :col="item.column+1" :row="item.row" :text="item.title" backgroundColor="#43b883" :style="'margin-top: '+item.marginTop+'px;'"/>                    
+              <Label v-for = "(item, index) in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]" :key="index" :text="item" :row="index" col="0" backgroundColor="#ffd0c7"/>
+              <Label v-for= "(item, index) in selectedWeekNotes" class="home__weekview_cell" :key="'event'+index" :col="item.column+1" :row="item.row" :text="item.title" backgroundColor="#dbc7ff" :style="'margin-top: '+item.marginTop+'px;'"/>                    
               </GridLayout>
             </StackLayout>
           </ScrollView>
