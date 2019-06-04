@@ -58,8 +58,8 @@
               <v-template>
                 <WrapLayout class="home__notes-list-item">
                   <Label class="home__notes-list-item-note" :text="event.title" />
-                  <Label class="home__notes-list-item-time" :text="event.startDate.getHours() + ':' + event.startDate.getMinutes() + ' - '" />
-                  <Label class="home__notes-list-item-time" :text="event.endDate.getHours() + ':' + event.endDate.getMinutes()" />
+                  <Label class="home__notes-list-item-time" :text="('0'+event.startDate.getHours()).slice(-2)  + ':' + ('0'+event.startDate.getMinutes()).slice(-2) + ' - '" />
+                  <Label class="home__notes-list-item-time" :text="('0'+event.endDate.getHours()).slice(-2)+ ':' + ('0'+event.endDate.getMinutes()).slice(-2)" />
                 </WrapLayout>
               </v-template>
             </ListView> 
