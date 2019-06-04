@@ -203,8 +203,15 @@ import { type } from 'os';
           endDate: new Date(tDate.getFullYear(), tDate.getMonth(), tDate.getDate(), tEndTime.getHours(), tEndTime.getMinutes()),
           noteText: tNoteText
         }
-        let event = new calendarModule.CalendarEvent(t.noteText, t.startDate, t.endDate, false);
-        this.$store.state.notes = this.$store.state.notes.concat([event])
+        console.log(t.startDate)
+        console.log(t.endDate)
+        console.log(t.startDate > t.endDate)
+        if (t.startDate > t.endDate){
+          alert('Некорректное время!')
+        } else {
+          let event = new calendarModule.CalendarEvent(t.noteText, t.startDate, t.endDate, false);
+          this.$store.state.notes = this.$store.state.notes.concat([event])          
+        }
       },
       tapNote(event){
         console.log(event.item.title)
@@ -313,7 +320,7 @@ import { type } from 'os';
       }
 
       &__weekview_cell {
-        height: 20%;
+        
       }
     }
 </style>
