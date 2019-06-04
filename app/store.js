@@ -11,7 +11,12 @@ export default new Vuex.Store({
   mutations: {
     addNote (state, event) {
       console.log('commit')
-      state.notes.push(event)
+      event.id = state.notes.length
+      state.notes = state.notes.concat([event])
+    },
+    editNote (state, event) {
+      console.log('edit')
+      state.notes[event.id] = event
     }
   },
   actions: {

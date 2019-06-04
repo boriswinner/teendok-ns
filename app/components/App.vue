@@ -4,7 +4,7 @@
           <NavigationButton v-show="isCreatingNewNote" text="Назад" android.systemIcon="ic_menu_back" @tap="createNewNoteRevertUIState" />          
         </ActionBar>
         <WrapLayout backgroundColor="white">
-          <SegmentedBar class="home__calendar-mode-bar" @selectedIndexChange="changeCalendarMode">
+          <SegmentedBar v-show="!isCreatingNewNote" class="home__calendar-mode-bar" @selectedIndexChange="changeCalendarMode">
             <SegmentedBarItem title="Месяц" />
             <SegmentedBarItem title="Неделя" />
             <SegmentedBarItem title="День" />
@@ -210,7 +210,7 @@ import { type } from 'os';
           alert('Некорректное время!')
         } else {
           let event = new calendarModule.CalendarEvent(t.noteText, t.startDate, t.endDate, false);
-          this.$store.state.notes = this.$store.state.notes.concat([event])          
+          this.$store.commit('addNote', event)          
         }
       },
       tapNote(event){
