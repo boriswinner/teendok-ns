@@ -46,7 +46,8 @@
             :eventSource="calendarEvents"
             eventsViewMode="Inline" 
             selectionMode="Single" 
-            viewMode="Day"              
+            viewMode="Day"      
+            :dayViewStyle='dayViewStyle'        
           ></RadCalendar>                        
           <StackLayout verticalAlignment="center">
             <Label v-if="isCreatingNewNote" class="home__time-picker-label" text="Время начала" />
@@ -130,6 +131,13 @@
         } else {
           return '100%'
         }
+      },
+      dayViewStyle(){
+        let t = new calendarModule.CalendarDayViewStyle()
+        let dayEventsViewStyle = new calendarModule.DayEventsViewStyle();
+        dayEventsViewStyle.timeLabelFormat = 'HH:mm';
+        t.dayEventsViewStyle = dayEventsViewStyle;
+        return t
       }   
     },
     data () {
