@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import * as calendarModule from 'nativescript-ui-calendar';
+import * as ApplicationSettings from "application-settings";
 
 Vue.use(Vuex);
 
@@ -23,6 +24,9 @@ export default new Vuex.Store({
 
   },
   getters: {
+    getNotes: state => {
+      return state.notes
+    },
     getNotesByDate: state => date => {
       return state.notes[date]
     }

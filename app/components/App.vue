@@ -94,7 +94,7 @@
     },
     computed: {
       calendarEvents (){
-        return this.$store.state.notes
+        return this.$store.getters.getNotes
       },
       selectedDayNotes (){
         let vi = this;
@@ -249,11 +249,6 @@
         gestureManager.setPinchCloseToChangeDisplayMode(false)
         gestureManager.setSwipeDownToChangeDisplayMode(false)
         gestureManager.setDoubleTapToChangeDisplayMode(false)
-        console.log('---')
-        for (let property in gestureManager){
-          console.log( property + ': ' + gestureManager[property]+'; ');
-        }
-        console.log(gestureManager)
       }
     },
     created() {
