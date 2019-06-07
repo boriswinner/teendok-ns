@@ -13,6 +13,7 @@
             v-show="!isCreatingNewNote && calendarMode === 0"
             class="home__calendar" id="calendarMonth" ref="calendarMonth"
             @dateSelected="onDateSelected"
+            @loaded="disableCalendarGestures"
             :eventSource="calendarEvents"
             eventsViewMode="None" 
             selectionMode="Single" 
@@ -21,6 +22,7 @@
           <RadCalendar 
             v-show="!isCreatingNewNote && calendarMode === 1"
             class="home__calendar-week" id="calendarWeek" ref="calendarWeek"
+            @loaded="disableCalendarGestures"
             @dateSelected="onDateSelected"
             :eventSource="calendarEvents"
             eventsViewMode="Inline" 
@@ -39,6 +41,7 @@
           <RadCalendar 
             v-show="!isCreatingNewNote && calendarMode === 2"
             class="home__calendar-day" id="calendarDay" ref="calendarDay"
+            @loaded="disableCalendarGestures"
             @dateSelected="onDateSelected"
             :eventSource="calendarEvents"
             eventsViewMode="Inline" 
@@ -229,6 +232,21 @@
         })
         console.log(event.item.title)
       },
+      disableCalendarGestures (event){
+        // THIS WILL WORK ONLY ON ANDROID, BUT IT IS POSSIBLE TO ADOPT FOR IOS
+        let calendar = event.object
+        let telCalendar = calendar.nativeView
+        let gestureManager = telCalendar.getGestureManager()
+        gestureManager.setSwipeUpToChangeDisplayMode(false)
+        gestureManager.setPinchCloseToChangeDisplayMode(false)
+        gestureManager.setSwipeDownToChangeDisplayMode(false)
+        gestureManager.setDoubleTapToChangeDisplayMode(false)
+        console.log('---')
+        for (let property in gestureManager){
+          console.log( property + ': ' + gestureManager[property]+'; ');
+        }
+        console.log(gestureManager)
+      }
     },
     created() {
       this.selectedDay = new Date();
@@ -253,6 +271,24 @@
       // this.$store.state.notes = events;
       // console.log(this.$store.state.notes)
     },
+    mounted: function () {
+      this.$nextTick(function () {
+        // let calendar = this.$refs.calendarMonth._nativeView;
+        // calendar.createNativeView()
+        // calendar = calendar._nativeView
+        // // let t = calendar.nativeViewProtected
+        // console.log('---')
+        // for (let property in calendar) {
+        //   console.log( property + ': ' + calendar[property]+'; ');
+        // }        
+        // console.log(calendar)        
+        // console.log('---')
+        // console.log(t)
+        // console.log('---')
+        // gestureManager.setDoubleTapToChangeDisplayMode(false); // true is the default value
+        
+      })
+    }    
   }
 </script>
 
