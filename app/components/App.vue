@@ -64,9 +64,9 @@
               </v-template>
             </ListView> 
           </ScrollView>            
-          <TextField ref="newNoteField" v-model="newNoteText" class="home__new-note-text" 
+          <TextField ref="newNoteField" v-model="newNoteText" :style="{ width: newNoteFieldWidth}" class="home__new-note-text" 
             @focus="isCreatingNewNote = true" @returnPress = "createNewNote" hint="Создать новую заметку..." />
-          <Button text="+" class="home__new-note-button" @tap="createNewNote"/>       
+          <Button v-show="isCreatingNewNote" text="+" class="home__new-note-button" @tap="createNewNote"/>       
           <!-- this thing is for losing focus on textedit -->
           <TextField ref="dummy" height="0" id="dummy"></TextField>
         </WrapLayout>    
@@ -80,10 +80,14 @@
   import * as utils from "utils/utils";
   import { isIOS, isAndroid } from "platform";
   import * as frame from "ui/frame";
-import { type } from 'os';
+  import { type } from 'os';
+  import NoteEdit from '@/components/NoteEdit'
 
 
   export default {
+    components: {
+      NoteEdit,
+    },
     computed: {
       calendarEvents (){
         return this.$store.state.notes
@@ -97,7 +101,7 @@ import { type } from 'os';
         notes.sort((a,b) => (a.startDate > b.startDate) ? 1 : ((b.startDate > a.startDate) ? -1 : 0))      
         return notes
       },
-      selectedWeekNotes(){
+      selectedWeekNotes (){
         let vi = this
         let ev = []
         this.sameWeekDates(this.selectedDay).forEach(function(item, index, arr){
@@ -116,7 +120,14 @@ import { type } from 'os';
         console.log('------------')
         console.log(ev)
         return ev
-      },      
+      },   
+      newNoteFieldWidth () {
+        if (this.isCreatingNewNote) {
+          return '90%'
+        } else {
+          return '100%'
+        }
+      }   
     },
     data () {
       return {
@@ -203,9 +214,6 @@ import { type } from 'os';
           endDate: new Date(tDate.getFullYear(), tDate.getMonth(), tDate.getDate(), tEndTime.getHours(), tEndTime.getMinutes()),
           noteText: tNoteText
         }
-        console.log(t.startDate)
-        console.log(t.endDate)
-        console.log(t.startDate > t.endDate)
         if (t.startDate > t.endDate){
           alert('Некорректное время!')
         } else {
@@ -214,6 +222,11 @@ import { type } from 'os';
         }
       },
       tapNote(event){
+        this.$showModal(NoteEdit, {
+          props: {
+            noteObject: event.item
+          }
+        })
         console.log(event.item.title)
       },
     },
@@ -290,7 +303,6 @@ import { type } from 'os';
 
       &__new-note-text {
         height: 10%;
-        width: 90%;
       }
 
       &__new-note-button{
