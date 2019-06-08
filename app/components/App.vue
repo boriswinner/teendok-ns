@@ -87,6 +87,8 @@
   import { type } from 'os';
   import NoteEdit from '@/components/NoteEdit'
 
+  var application = require('application');  
+
 
   export default {
     components: {
@@ -253,6 +255,13 @@
         // THIS WILL WORK ONLY ON ANDROID, BUT IT IS POSSIBLE TO ADOPT FOR IOS
         let picker = event.object.nativeView
         picker.setIs24HourView(java.lang.Boolean.TRUE)
+      },
+      backEvent(args) {
+        // THIS WILL WORK ONLY ON ANDROID, BUT IT IS POSSIBLE TO ADOPT FOR IOS
+        if (this.isCreatingNewNote){
+          args.cancel = true;
+          this.createNewNoteRevertUIState()
+        }
       }
     },
     created() {
@@ -279,6 +288,9 @@
       // console.log(this.$store.state.notes)
     },
     mounted: function () {
+      if (isAndroid) {
+          application.android.on(application.AndroidApplication.activityBackPressedEvent, this.backEvent);
+      }      
       this.$nextTick(function () {
         // let calendar = this.$refs.calendarMonth._nativeView;
         // calendar.createNativeView()
