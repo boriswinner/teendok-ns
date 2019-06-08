@@ -228,8 +228,7 @@
         if (t.startDate > t.endDate){
           alert('Некорректное время!')
         } else {
-          let event = new calendarModule.CalendarEvent(t.noteText, t.startDate, t.endDate, false);
-          this.$store.commit('addNote', event)          
+          this.$store.commit('addNote', t)          
         }
       },
       tapNote(event){

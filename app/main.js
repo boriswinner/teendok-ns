@@ -4,6 +4,7 @@ import App from './components/App'
 import store from './store';
 
 import VueDevtools from 'nativescript-vue-devtools'
+import localStorage from 'nativescript-localstorage';
 
 Vue.registerElement('RadCalendar', () => require('nativescript-ui-calendar').RadCalendar)
 // Vue.registerElement('RadListView', () => require('nativescript-ui-listview').RadListView)
