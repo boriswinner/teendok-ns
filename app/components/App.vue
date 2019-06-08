@@ -52,11 +52,11 @@
           <StackLayout verticalAlignment="center">
             <Label v-if="isCreatingNewNote" class="home__time-picker-label" text="Время начала" />
           </StackLayout>          
-          <TimePicker v-if="isCreatingNewNote" class="home__time-picker" v-model="newNoteStartTime" />
+          <TimePicker v-if="isCreatingNewNote" @loaded="setTimePicker24h" class="home__time-picker" v-model="newNoteStartTime" />
           <StackLayout verticalAlignment="center">
             <Label v-if="isCreatingNewNote" class="home__time-picker-label" text="Время конца" />
           </StackLayout>     
-          <TimePicker v-if="isCreatingNewNote" class="home__time-picker" v-model="newNoteEndTime" />  
+          <TimePicker v-if="isCreatingNewNote" @loaded="setTimePicker24h" class="home__time-picker" v-model="newNoteEndTime" />  
           <ScrollView v-show="calendarMode === 0 && !isCreatingNewNote" class="home__notes-list-wrapper">
             <ListView for="event in selectedDayNotes" class="home__notes-list" @itemTap="tapNote">
               <v-template>
@@ -248,6 +248,11 @@
         gestureManager.setPinchCloseToChangeDisplayMode(false)
         gestureManager.setSwipeDownToChangeDisplayMode(false)
         gestureManager.setDoubleTapToChangeDisplayMode(false)
+      },
+      setTimePicker24h (event){
+        // THIS WILL WORK ONLY ON ANDROID, BUT IT IS POSSIBLE TO ADOPT FOR IOS
+        let picker = event.object.nativeView
+        picker.setIs24HourView(java.lang.Boolean.TRUE)
       }
     },
     created() {
