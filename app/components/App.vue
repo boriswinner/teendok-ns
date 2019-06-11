@@ -33,7 +33,7 @@
             <StackLayout>     
               <GridLayout backgroundColor="white" columns="*, *, *, *, *, *, *, *" rows="60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60">
               <Label v-for = "(item, index) in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]" :key="index" :text="item" :row="index" col="0" backgroundColor="#ffd0c7"/>
-              <Label v-for= "(item, index) in selectedWeekNotes" class="home__weekview_cell" :key="'event'+index" :col="item.column+1" :row="item.row" :text="item.title" backgroundColor="#dbc7ff" :style="{'margin-top': item.marginTop+'px'}"/>                    
+              <Label v-for= "(item, index) in selectedWeekNotes" class="home__weekview_cell" :key="'event'+index" :col="item.column+1" :row="item.row" :text="item.title" backgroundColor="#dbc7ff" :style="{'margin-top': item.marginTop+'px', 'margin-bottom': item.marginBottom+'px'}"/>                    
               </GridLayout>
             </StackLayout>
           </ScrollView>
@@ -119,8 +119,9 @@
                 ev.push ({
                   column: index,
                   row: j,
-                  title: t[i].title,
+                  title: j ===  t[i].startDate.getHours() ? t[i].title : '',
                   marginTop: j === t[i].startDate.getHours() ? t[i].startDate.getMinutes() : 0,
+                  marginBottom: j === t[i].endDate.getHours() ? t[i].endDate.getMinutes() : 0,
                 })
               }
             }
