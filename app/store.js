@@ -40,6 +40,7 @@ export default new Vuex.Store({
     },
     editNote (state, event) {
       console.log('edit')
+      console.log(event.noteText)
       state.notes[event.id] = event
     }
   },
@@ -51,7 +52,7 @@ export default new Vuex.Store({
       let events = []
       state.notes.forEach(function callback(currentValue, index, array) {
         events.push(new calendarModule.CalendarEvent(currentValue.noteText, new Date(currentValue.startDate), new Date(currentValue.endDate), false))
-        
+
       });
       return events
     },

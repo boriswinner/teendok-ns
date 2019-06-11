@@ -33,7 +33,7 @@
             <StackLayout>     
               <GridLayout backgroundColor="white" columns="*, *, *, *, *, *, *, *" rows="60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60">
               <Label v-for = "(item, index) in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]" :key="index" :text="item" :row="index" col="0" backgroundColor="#ffd0c7"/>
-              <Label v-for= "(item, index) in selectedWeekNotes" class="home__weekview_cell" :key="'event'+index" :col="item.column+1" :row="item.row" :text="item.title" backgroundColor="#dbc7ff" :style="'margin-top: '+item.marginTop+'px;'"/>                    
+              <Label v-for= "(item, index) in selectedWeekNotes" class="home__weekview_cell" :key="'event'+index" :col="item.column+1" :row="item.row" :text="item.title" backgroundColor="#dbc7ff" :style="{'margin-top': item.marginTop+'px'}"/>                    
               </GridLayout>
             </StackLayout>
           </ScrollView>
@@ -234,14 +234,17 @@
         }
       },
       tapNote(event){
+
+        let vi = this
         this.$showModal(NoteEdit, {
           props: {
             noteObject: event.item
           }
-        })
-        console.log(event.item.title)
+        }).then (data => 
+            vi.$store.commit('editNote', data) 
+          )
       },
-      disableCalendarGestures (event){
+      disablalendarGestures (event){
         // THIS WILL WORK ONLY ON ANDROID, BUT IT IS POSSIBLE TO ADOPT FOR IOS
         let calendar = event.object
         let telCalendar = calendar.nativeView
