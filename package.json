@@ -10,7 +10,7 @@
       "version": "5.0.0"
     },
     "tns-android": {
-      "version": "5.0.0"
+      "version": "5.4.0"
     }
   },
   "dependencies": {
@@ -24,7 +24,7 @@
     "nativescript-vue": "^2.0.0",
     "nativescript-vue-devtools": "^1.2.0",
     "nativescript-vuex-persistent": "^1.2.0",
-    "tns-core-modules": "^5.0.2",
+    "tns-core-modules": "^5.4.2",
     "vuex": "^3.0.1"
   },
   "devDependencies": {

@@ -108,18 +108,21 @@
         return notes
       },
       selectedWeekNotes (){
+        //breaks events into different objects for every hour due to the grid
         let vi = this
         let ev = []
         this.sameWeekDates(this.selectedDay).forEach(function(item, index, arr){
           let t = vi.getNotesOfDay(item)
           if (t.length >= 0){
             for (let i = 0; i < t.length; ++i){
-              ev.push ({
-                column: index,
-                row: t[i].startDate.getHours(),
-                title: t[i].title,
-                marginTop: t[i].startDate.getMinutes(),
-              })
+              for (let j = t[i].startDate.getHours(); j <= t[i].endDate.getHours() ; ++j){
+                ev.push ({
+                  column: index,
+                  row: j,
+                  title: t[i].title,
+                  marginTop: j === t[i].startDate.getHours() ? t[i].startDate.getMinutes() : 0,
+                })
+              }
             }
           }
         })
@@ -244,7 +247,7 @@
             vi.$store.commit('editNote', data) 
           )
       },
-      disablalendarGestures (event){
+      disableCalendarGestures (event){
         // THIS WILL WORK ONLY ON ANDROID, BUT IT IS POSSIBLE TO ADOPT FOR IOS
         let calendar = event.object
         let telCalendar = calendar.nativeView
