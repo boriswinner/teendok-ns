@@ -127,8 +127,6 @@
             }
           }
         })
-        console.log('------------')
-        console.log(ev)
         return ev
       },   
       newNoteFieldWidth () {
@@ -238,15 +236,22 @@
         }
       },
       tapNote(event){
-
         let vi = this
+        let i = event.item
+        let idstr = (i.title + i.startDate.toString() + i.endDate.toString()).toString().replace(/[^A-Z0-9]/ig, "") 
         this.$showModal(NoteEdit, {
           props: {
-            noteObject: event.item
+            noteObject: i
           }
-        }).then (data => 
-            vi.$store.commit('editNote', data) 
-          )
+        }).then (data => {
+            let t = data
+            t.idstr = idstr
+            console.log('!!!!!!!!!')
+            for (var property in t) {
+              console.log( property + ': ' + t[property]+'; ')
+            }            
+            vi.$store.commit('editNoteByIdstr', t) 
+        })
       },
       disableCalendarGestures (event){
         // THIS WILL WORK ONLY ON ANDROID, BUT IT IS POSSIBLE TO ADOPT FOR IOS
