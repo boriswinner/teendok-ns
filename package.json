@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@vue/devtools": "^5.0.6",
+    "axios": "^0.19.0",
     "nativescript-calendar-weekview": "^1.0.6",
     "nativescript-localstorage": "^2.0.0",
     "nativescript-socketio": "^3.2.1",

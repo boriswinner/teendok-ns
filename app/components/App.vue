@@ -86,6 +86,7 @@
   import * as frame from "ui/frame";
   import { type } from 'os';
   import NoteEdit from '@/components/NoteEdit'
+  import axios from "axios";
 
   var application = require('application');  
 
@@ -319,6 +320,13 @@
         // gestureManager.setDoubleTapToChangeDisplayMode(false); // true is the default value
         
       })
+      axios({ method: "GET", "url": "http://planner.skillmasters.ga/api/v1/events", headers: {
+        "X-Firebase-Auth": "serega_mem"
+      } }).then(result => {
+        console.log(result.data)
+      }, error => {
+        console.error(error);
+      });      
     }    
   }
 </script>
