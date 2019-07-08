@@ -284,46 +284,11 @@
       this.selectedDay = new Date();
       this.newNoteStartTime = new Date();
       this.newNoteEndTime = new Date();
-      // let events = [];
-      // let now = new Date();
-      // let startDate;
-      // let endDate;
-      // let event;
-      // for (let i = 1; i < 2; i++) {
-      //   startDate = new Date(now.getFullYear(), now.getMonth(), i * 2, 1);
-      //   console.log(startDate)
-      //   endDate = new Date(now.getFullYear(), now.getMonth(), (i * 2), 3);
-      //   event = new calendarModule.CalendarEvent("event " + i, startDate, endDate, false);
-      //   events.push(event);
-      //   if (i % 3 == 0) {
-      //     event = new calendarModule.CalendarEvent("second " + i, startDate, endDate, true);
-      //     events.push(event);
-      //   }
-      // }
-      // this.$store.state.notes = events;
-      // console.log(this.$store.state.notes)
     },
     mounted: function () {
       if (isAndroid) {
           application.android.on(application.AndroidApplication.activityBackPressedEvent, this.backEvent);
       }      
-      this.$nextTick(function () {
-        // let calendar = this.$refs.calendarMonth._nativeView;
-        // calendar.createNativeView()
-        // calendar = calendar._nativeView
-        // // let t = calendar.nativeViewProtected
-        // console.log('---')
-        // for (let property in calendar) {
-        //   console.log( property + ': ' + calendar[property]+'; ');
-        // }        
-        // console.log(calendar)        
-        // console.log('---')
-        // console.log(t)
-        // console.log('---')
-        // gestureManager.setDoubleTapToChangeDisplayMode(false); // true is the default value
-        
-      })
-      
 
       axios.get("http://planner.skillmasters.ga/api/v1/events", {headers: {
         "X-Firebase-Auth": "serega_mem"
@@ -354,22 +319,6 @@
       })
       .finally(function () {
       });  
-      // console.log(this.tres)
-      // axios.get("http://planner.skillmasters.ga/api/v1/instances",{
-      //   headers: {
-      //     "X-Firebase-Auth": "serega_mem"
-      //   },
-      //   params: {
-      //     "id": this.tres[0].id,
-      //     "owner_id": this.tres[0].owner_id,
-      //   }
-      // }).then(result => {
-      //   console.log('+++++++++')
-      //   console.log(result.data)
-      // }, error => {
-      //   console.log('/////////')
-      //   console.error(error);
-      // });       
     }    
   }
 </script>
