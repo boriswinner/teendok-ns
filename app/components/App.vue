@@ -295,17 +295,25 @@
       }}).then(result => {
         console.log(result.data)
         if (!result.data.success) return
+        let event_ids = result.data.data.map(a => parseInt(a.id))   
+        console.log(event_ids)
         // this.tres = result.data
         return axios.get("http://planner.skillmasters.ga/api/v1/events/instances", {
           headers: {
             "X-Firebase-Auth": "serega_mem"
           },
+          // params: {
+          //   id: event_ids,
+          // },
         }).then(result => {
-          console.log(result.data)
+          console.log(result.data.data)
             return axios.get("http://planner.skillmasters.ga/api/v1/patterns", {
               headers: {
                 "X-Firebase-Auth": "serega_mem"
               },
+              params: {
+                events: JSON.stringify(event_ids),
+              },              
             }).then(result => {
               console.log(result.data)
             }).catch(function (error) {
