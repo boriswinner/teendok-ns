@@ -87,6 +87,7 @@
   import { type } from 'os';
   import NoteEdit from '@/components/NoteEdit'
   import axios from "axios";
+  var qs = require('qs');
 
   var application = require('application');  
 
@@ -289,16 +290,24 @@
       if (isAndroid) {
           application.android.on(application.AndroidApplication.activityBackPressedEvent, this.backEvent);
       }      
+      let arraySerializingAxios = axios.create({
+          paramsSerializer: params => qs.stringify(params, {arrayFormat: 'repeat'})
+      })
 
-      axios.get("http://planner.skillmasters.ga/api/v1/events", {headers: {
+      arraySerializingAxios.get("http://planner.skillmasters.ga/api/v1/events", {headers: {
         "X-Firebase-Auth": "serega_mem"
       }}).then(result => {
         console.log(result.data)
         if (!result.data.success) return
         let event_ids = result.data.data.map(a => parseInt(a.id))   
+        // var serialized_event_ids = new URLSearchParams();
+        // for (let i = 0; i < event_ids.length; ++i){
+        //   serialized_event_ids.append("events", event_ids[i])
+        // }
         console.log(event_ids)
+        // console.log(serialized_event_ids)
         // this.tres = result.data
-        return axios.get("http://planner.skillmasters.ga/api/v1/events/instances", {
+        return arraySerializingAxios.get("http://planner.skillmasters.ga/api/v1/events/instances", {
           headers: {
             "X-Firebase-Auth": "serega_mem"
           },
@@ -306,14 +315,14 @@
           //   id: event_ids,
           // },
         }).then(result => {
-          console.log(result.data.data)
-            return axios.get("http://planner.skillmasters.ga/api/v1/patterns", {
+          //console.log(result.data.data)
+            return arraySerializingAxios.get("http://planner.skillmasters.ga/api/v1/patterns", {
               headers: {
                 "X-Firebase-Auth": "serega_mem"
               },
               params: {
-                events: JSON.stringify(event_ids),
-              },              
+                "events": event_ids,
+              },                       
             }).then(result => {
               console.log(result.data)
             }).catch(function (error) {
