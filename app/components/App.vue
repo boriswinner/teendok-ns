@@ -160,6 +160,9 @@
         },
         calendarMode: {
           default: 0
+        },
+        tres: {
+          default: null
         }        
       }
     },
@@ -320,13 +323,53 @@
         // gestureManager.setDoubleTapToChangeDisplayMode(false); // true is the default value
         
       })
-      axios({ method: "GET", "url": "http://planner.skillmasters.ga/api/v1/events", headers: {
+      
+
+      axios.get("http://planner.skillmasters.ga/api/v1/events", {headers: {
         "X-Firebase-Auth": "serega_mem"
-      } }).then(result => {
+      }}).then(result => {
         console.log(result.data)
-      }, error => {
-        console.error(error);
-      });      
+        if (!result.data.success) return
+        // this.tres = result.data
+        return axios.get("http://planner.skillmasters.ga/api/v1/events/instances", {
+          headers: {
+            "X-Firebase-Auth": "serega_mem"
+          },
+        }).then(result => {
+          console.log(result.data)
+            return axios.get("http://planner.skillmasters.ga/api/v1/patterns", {
+              headers: {
+                "X-Firebase-Auth": "serega_mem"
+              },
+            }).then(result => {
+              console.log(result.data)
+            }).catch(function (error) {
+            console.log(error);
+            })                      
+        }).catch(function (error) {
+        console.log(error);
+        })            
+      }).catch(function (error) {
+        console.log(error);
+      })
+      .finally(function () {
+      });  
+      // console.log(this.tres)
+      // axios.get("http://planner.skillmasters.ga/api/v1/instances",{
+      //   headers: {
+      //     "X-Firebase-Auth": "serega_mem"
+      //   },
+      //   params: {
+      //     "id": this.tres[0].id,
+      //     "owner_id": this.tres[0].owner_id,
+      //   }
+      // }).then(result => {
+      //   console.log('+++++++++')
+      //   console.log(result.data)
+      // }, error => {
+      //   console.log('/////////')
+      //   console.error(error);
+      // });       
     }    
   }
 </script>

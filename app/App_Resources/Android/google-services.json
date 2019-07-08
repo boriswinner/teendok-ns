@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "642217642695",
+    "firebase_url": "https://test1-99536.firebaseio.com",
+    "project_id": "test1-99536",
+    "storage_bucket": "test1-99536.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:642217642695:android:eccfbe90bed1ab4b",
+        "android_client_info": {
+          "package_name": "org.boriswinner.teendok"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "642217642695-luqcmo66apga6qslq34u2hfn30h8kgfb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7fHgXZT9jEEZ1sn76VJIH2JOhR0vk64Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "642217642695-luqcmo66apga6qslq34u2hfn30h8kgfb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
