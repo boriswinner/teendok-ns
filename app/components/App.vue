@@ -164,7 +164,10 @@
         },
         tres: {
           default: null
-        }        
+        },
+        serverEvents: [],
+        serverInstances: [],
+        serverPatterns: [],        
       }
     },
     methods: {
@@ -287,6 +290,7 @@
       this.newNoteEndTime = new Date();
     },
     mounted: function () {
+      //bind back button
       if (isAndroid) {
           application.android.on(application.AndroidApplication.activityBackPressedEvent, this.backEvent);
       }      
@@ -299,23 +303,25 @@
       }}).then(result => {
         console.log(result.data)
         if (!result.data.success) return
+        this.serverEvents = result.data.data
+        this.serverEvents = this.serverEvents.reduce(function(map, obj) {
+            map[obj.id] = obj;
+            return map;
+        }, {});        
+        // console.log(this.serverEvents)
         let event_ids = result.data.data.map(a => parseInt(a.id))   
-        // var serialized_event_ids = new URLSearchParams();
-        // for (let i = 0; i < event_ids.length; ++i){
-        //   serialized_event_ids.append("events", event_ids[i])
-        // }
-        console.log(event_ids)
-        // console.log(serialized_event_ids)
-        // this.tres = result.data
+        // console.log(event_ids)
         return arraySerializingAxios.get("http://planner.skillmasters.ga/api/v1/events/instances", {
           headers: {
             "X-Firebase-Auth": "serega_mem"
           },
-          // params: {
-          //   id: event_ids,
-          // },
+          params: {
+            "id": event_ids,
+          },              
         }).then(result => {
-          //console.log(result.data.data)
+          console.log(result.data)
+            if (!result.data.success) return
+            this.serverInstances = result.data.data
             return arraySerializingAxios.get("http://planner.skillmasters.ga/api/v1/patterns", {
               headers: {
                 "X-Firebase-Auth": "serega_mem"
@@ -325,6 +331,8 @@
               },                       
             }).then(result => {
               console.log(result.data)
+              if (!result.data.success) return
+              this.serverPatterns = result.data.data              
             }).catch(function (error) {
             console.log(error);
             })                      
@@ -335,6 +343,8 @@
         console.log(error);
       })
       .finally(function () {
+        console.log('------')
+
       });  
     }    
   }
