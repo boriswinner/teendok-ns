@@ -297,14 +297,15 @@
       let arraySerializingAxios = axios.create({
           paramsSerializer: params => qs.stringify(params, {arrayFormat: 'repeat'})
       })
+      let vi = this
 
       arraySerializingAxios.get("http://planner.skillmasters.ga/api/v1/events", {headers: {
         "X-Firebase-Auth": "serega_mem"
       }}).then(result => {
         console.log(result.data)
         if (!result.data.success) return
-        this.serverEvents = result.data.data
-        this.serverEvents = this.serverEvents.reduce(function(map, obj) {
+        vi.serverEvents = result.data.data
+        vi.serverEvents = vi.serverEvents.reduce(function(map, obj) {
             map[obj.id] = obj;
             return map;
         }, {});        
@@ -321,7 +322,7 @@
         }).then(result => {
           console.log(result.data)
             if (!result.data.success) return
-            this.serverInstances = result.data.data
+            vi.serverInstances = result.data.data
             return arraySerializingAxios.get("http://planner.skillmasters.ga/api/v1/patterns", {
               headers: {
                 "X-Firebase-Auth": "serega_mem"
@@ -332,20 +333,34 @@
             }).then(result => {
               console.log(result.data)
               if (!result.data.success) return
-              this.serverPatterns = result.data.data              
+              vi.serverPatterns = result.data.data              
             }).catch(function (error) {
             console.log(error);
-            })                      
+            }).finally(function () {
+              console.log('------')
+              console.log(vi.serverInstances.length)
+              vi.serverInstances.forEach(function (i, index) {
+                // console.log(i)
+                // console.log(i.event_id)
+                // console.log(vi.serverEvents)
+                let t = {
+                  id: i.event_id,
+                  startDate: new Date(i.started_at),
+                  endDate: new Date(i.ended_at),
+                  name: vi.serverEvents[i.event_id].name,
+                  details: vi.serverEvents[i.event_id].details,
+                  status: vi.serverEvents[i.event_id].status,
+                  location: vi.serverEvents[i.event_id].location
+                }
+                console.log(t)
+              })
+            });                       
         }).catch(function (error) {
         console.log(error);
         })            
       }).catch(function (error) {
         console.log(error);
       })
-      .finally(function () {
-        console.log('------')
-
-      });  
     }    
   }
 </script>
