@@ -98,7 +98,7 @@
     },
     computed: {
       calendarEvents (){
-        return this.$store.getters.getNotes
+        return this.$store.getters.getCalendarEvents
       },
       selectedDayNotes (){
         let vi = this;
@@ -235,7 +235,7 @@
         let t = {
           startDate: new Date(tDate.getFullYear(), tDate.getMonth(), tDate.getDate(), tStartTime.getHours(), tStartTime.getMinutes()),
           endDate: new Date(tDate.getFullYear(), tDate.getMonth(), tDate.getDate(), tEndTime.getHours(), tEndTime.getMinutes()),
-          noteText: tNoteText
+          name: tNoteText
         }
         if (t.startDate > t.endDate){
           alert('Некорректное время!')
@@ -298,6 +298,7 @@
           paramsSerializer: params => qs.stringify(params, {arrayFormat: 'repeat'})
       })
       let vi = this
+      this.$store.commit('clearNotes') 
 
       arraySerializingAxios.get("http://planner.skillmasters.ga/api/v1/events", {headers: {
         "X-Firebase-Auth": "serega_mem"
@@ -358,6 +359,7 @@
                   timezone: vi.serverPatterns[i.event_id].timezone
                 }
                 console.log(t)
+                vi.$store.commit('addNote', t) 
               })
             });                       
         }).catch(function (error) {
