@@ -21,3 +21,8 @@ tns run <platform> --bundle
 # Plugins
 
 npm install --save nativescript-ui-calendar
+
+# Firebase
+You need to configure Firebase for not to crash.
+You can reconfigure the plugin by going to the node_modules/nativescript-plugin-firebase and running npm run config.
+You have to disable most of the stuff, saving auth.

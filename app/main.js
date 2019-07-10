@@ -5,6 +5,7 @@ import store from './store';
 
 import VueDevtools from 'nativescript-vue-devtools'
 import localStorage from 'nativescript-localstorage';
+import LoginPage from './components/LoginPage'
 
 Vue.registerElement('RadCalendar', () => require('nativescript-ui-calendar').RadCalendar)
 // Vue.registerElement('RadListView', () => require('nativescript-ui-listview').RadListView)
@@ -17,7 +18,7 @@ Vue.config.silent = (TNS_ENV === 'production')
 
 var qs = require('qs');
 
-const firebase = require("nativescript-plugin-firebase");
+var firebase = require("nativescript-plugin-firebase");
 firebase
   .init({
     // Optionally pass in properties for database, authentication and cloud messaging,
@@ -31,8 +32,8 @@ firebase
       console.log("firebase.init error: " + error);
     }
   );
-
+  
 new Vue({
   store,
-  render: h => h('frame', [h(App)])
+  render: h => h('frame', [h(LoginPage)])
 }).$start()

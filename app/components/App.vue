@@ -100,6 +100,9 @@
       calendarEvents (){
         return this.$store.getters.getCalendarEvents
       },
+      fullEvents () {
+        return this.$store.getters.getFullEvents
+      },
       selectedDayNotes (){
         let vi = this;
         let notes =  this.calendarEvents.filter(function (evt) {
