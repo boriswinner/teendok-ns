@@ -333,7 +333,11 @@
             }).then(result => {
               console.log(result.data)
               if (!result.data.success) return
-              vi.serverPatterns = result.data.data              
+              vi.serverPatterns = result.data.data  
+              vi.serverPatterns = vi.serverPatterns.reduce(function(map, obj) {
+                  map[obj.event_id] = obj;
+                  return map;
+              }, {});                              
             }).catch(function (error) {
             console.log(error);
             }).finally(function () {
@@ -350,7 +354,8 @@
                   name: vi.serverEvents[i.event_id].name,
                   details: vi.serverEvents[i.event_id].details,
                   status: vi.serverEvents[i.event_id].status,
-                  location: vi.serverEvents[i.event_id].location
+                  location: vi.serverEvents[i.event_id].location,
+                  timezone: vi.serverPatterns[i.event_id].timezone
                 }
                 console.log(t)
               })
