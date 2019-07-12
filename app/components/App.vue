@@ -58,10 +58,11 @@
           </StackLayout>     
           <TimePicker v-if="isCreatingNewNote" @loaded="setTimePicker24h" class="home__time-picker" v-model="newNoteEndTime" />  
           <ScrollView v-show="calendarMode === 0 && !isCreatingNewNote" class="home__notes-list-wrapper">
-            <ListView for="event in selectedDayNotes" class="home__notes-list" @itemTap="tapNote">
+            <ListView for="event in selectedDayFullEvents" class="home__notes-list" @itemTap="tapNote">
               <v-template>
                 <WrapLayout class="home__notes-list-item">
-                  <Label class="home__notes-list-item-note" :text="event.title" />
+                  <Label class="home__notes-list-item-note" :text="event.name" />
+                  <Label class="home__notes-list-item-note" :text="event.details" />
                   <Label class="home__notes-list-item-time" :text="('0'+event.startDate.getHours()).slice(-2)  + ':' + ('0'+event.startDate.getMinutes()).slice(-2) + ' - '" />
                   <Label class="home__notes-list-item-time" :text="('0'+event.endDate.getHours()).slice(-2)+ ':' + ('0'+event.endDate.getMinutes()).slice(-2)" />
                 </WrapLayout>
@@ -105,9 +106,9 @@
       firebaseToken () {
         return this.$store.getters.getFirebaseToken
       },
-      selectedDayNotes (){
+      selectedDayFullEvents (){
         let vi = this;
-        let notes =  this.calendarEvents.filter(function (evt) {
+        let notes =  this.fullEvents.filter(function (evt) {
           // adding + is a hack to compare dates, also we dont handle timezones
           return +vi.dateWithoutTime(evt.startDate) === +vi.dateWithoutTime(vi.selectedDay)
         })
@@ -418,7 +419,7 @@
       if (isAndroid) {
           application.android.on(application.AndroidApplication.activityBackPressedEvent, this.backEvent);
       }      
-      this.pushNote('det','loc','nam','sta',new Date(), new Date())
+      // this.pushNote('det','loc','nam','sta',new Date(), new Date())
       this.getNotesFromServer()
     }    
   }
