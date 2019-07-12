@@ -1,16 +1,15 @@
 <template>
     <Page>
-        <ActionBar title="teenDok">
-          <NavigationButton v-show="isCreatingNewNote" text="Назад" android.systemIcon="ic_menu_back" @tap="createNewNoteRevertUIState" />          
+        <ActionBar title="teenDok">        
         </ActionBar>
         <WrapLayout backgroundColor="white">
-          <SegmentedBar v-show="!isCreatingNewNote" class="home__calendar-mode-bar" @selectedIndexChange="changeCalendarMode">
+          <SegmentedBar class="home__calendar-mode-bar" @selectedIndexChange="changeCalendarMode">
             <SegmentedBarItem title="Месяц" />
             <SegmentedBarItem title="Неделя" />
             <SegmentedBarItem title="День" />
           </SegmentedBar>          
           <RadCalendar 
-            v-show="!isCreatingNewNote && calendarMode === 0"
+            v-show="calendarMode === 0"
             class="home__calendar" id="calendarMonth" ref="calendarMonth"
             @dateSelected="onDateSelected"
             @loaded="disableCalendarGestures"
@@ -20,7 +19,7 @@
             viewMode="Month"              
           ></RadCalendar>  
           <RadCalendar 
-            v-show="!isCreatingNewNote && calendarMode === 1"
+            v-show="calendarMode === 1"
             class="home__calendar-week" id="calendarWeek" ref="calendarWeek"
             @loaded="disableCalendarGestures"
             @dateSelected="onDateSelected"
@@ -29,7 +28,7 @@
             selectionMode="Single" 
             viewMode="Week"              
           ></RadCalendar>     
-          <ScrollView v-if="!isCreatingNewNote && calendarMode === 1" orientation="vertical" class="home__week-wrapper"> 
+          <ScrollView v-if="calendarMode === 1" orientation="vertical" class="home__week-wrapper"> 
             <StackLayout>     
               <GridLayout backgroundColor="white" columns="*, *, *, *, *, *, *, *" rows="60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60">
               <Label v-for = "(item, index) in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]" :key="index" :text="item" :row="index" col="0" backgroundColor="#ffd0c7"/>
@@ -39,7 +38,7 @@
           </ScrollView>
           
           <RadCalendar 
-            v-show="!isCreatingNewNote && calendarMode === 2"
+            v-show="calendarMode === 2"
             class="home__calendar-day" id="calendarDay" ref="calendarDay"
             @loaded="disableCalendarGestures"
             @dateSelected="onDateSelected"
@@ -48,16 +47,8 @@
             selectionMode="Single" 
             viewMode="Day"      
             :dayViewStyle='dayViewStyle'        
-          ></RadCalendar>                        
-          <StackLayout verticalAlignment="center">
-            <Label v-if="isCreatingNewNote" class="home__time-picker-label" text="Время начала" />
-          </StackLayout>          
-          <TimePicker v-if="isCreatingNewNote" @loaded="setTimePicker24h" class="home__time-picker" v-model="newNoteStartTime" />
-          <StackLayout verticalAlignment="center">
-            <Label v-if="isCreatingNewNote" class="home__time-picker-label" text="Время конца" />
-          </StackLayout>     
-          <TimePicker v-if="isCreatingNewNote" @loaded="setTimePicker24h" class="home__time-picker" v-model="newNoteEndTime" />  
-          <ScrollView v-show="calendarMode === 0 && !isCreatingNewNote" class="home__notes-list-wrapper">
+          ></RadCalendar>                              
+          <ScrollView v-show="calendarMode === 0" class="home__notes-list-wrapper">
             <ListView for="event in selectedDayFullEvents" class="home__notes-list" @itemTap="tapNote">
               <v-template>
                 <WrapLayout class="home__notes-list-item">
@@ -70,8 +61,7 @@
             </ListView> 
           </ScrollView>            
           <TextField ref="newNoteField" v-model="newNoteText" :style="{ width: newNoteFieldWidth}" class="home__new-note-text" 
-            @focus="isCreatingNewNote = true" @returnPress = "createNewNote" hint="Создать новую заметку..." />
-          <Button v-show="isCreatingNewNote" text="+" class="home__new-note-button" @tap="createNewNote"/>       
+            @focus="openNewNoteDialog" @returnPress = "createNewNote" hint="Создать новую заметку..." />      
           <!-- this thing is for losing focus on textedit -->
           <TextField ref="dummy" height="0" id="dummy"></TextField>
         </WrapLayout>    
@@ -86,7 +76,7 @@
   import { isIOS, isAndroid } from "platform";
   import * as frame from "ui/frame";
   import { type } from 'os';
-  import NoteEdit from '@/components/NoteEdit'
+  import NoteCreateEdit from '@/components/NoteCreateEdit'
   import axios from "axios";
   var qs = require('qs');
 
@@ -94,7 +84,7 @@
 
   export default {
     components: {
-      NoteEdit,
+      NoteCreateEdit,
     },
     computed: {
       calendarEvents (){
@@ -224,7 +214,6 @@
         // console.log(this.selectedWeekDays)
       },         
       createNewNoteRevertUIState(){
-        this.isCreatingNewNote = false
         //lose focus on main textEdit
         this.$refs.dummy.nativeView.focus()
         this.newNoteText = ""
@@ -358,11 +347,24 @@
         console.log(error);
       })
       },
+      openNewNoteDialog() {
+        this.isCreatingNewNote = true; 
+        this.$showModal(NoteCreateEdit)
+          .then (data => {
+            let t = data
+            t.idstr = idstr
+            console.log('!!!!!!!!!')
+            for (var property in t) {
+              console.log( property + ': ' + t[property]+'; ')
+            }            
+            // vi.$store.commit('editNoteByIdstr', t) 
+        })        
+      },
       tapNote(event){
         let vi = this
         let i = event.item
         let idstr = (i.title + i.startDate.toString() + i.endDate.toString()).toString().replace(/[^A-Z0-9]/ig, "") 
-        this.$showModal(NoteEdit, {
+        this.$showModal(NoteCreateEdit, {
           props: {
             noteObject: i
           }
