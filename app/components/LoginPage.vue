@@ -23,7 +23,6 @@
 				</StackLayout>
 
 				<Button :text="isLoggingIn ? 'Log In' : 'Sign Up'" @tap="submit" class="btn btn-primary m-t-20" />
-				<Label v-show="isLoggingIn" text="Forgot your password?" class="login-label" @tap="forgotPassword" />
 			</StackLayout>
 
 			<Label class="login-label sign-up-label" @tap="toggleForm">
@@ -73,9 +72,9 @@ export default {
     return {
       isLoggingIn: true,
       user: {
-        email: "test@test.com",
-        password: "tester",
-        confirmPassword: "tester"
+        email: null,
+        password: null,
+        confirmPassword: null
       }
     };
   },
@@ -96,24 +95,17 @@ export default {
       }
     },
     login() {
-      console.log()
       userService
         .login(this.user)
         .then(() => {
-      loader.hide();
-      console.log('aaa')
       let vi = this
       firebase.getAuthToken({
         // default false, not recommended to set to true by Firebase but exposed for {N} devs nonetheless :)
         forceRefresh: false
       }).then(
           function (result) {
-            console.log('aaa')
-            // for both platforms
             vi.$store.commit('setFirebaseToken', result.token)   
-            console.log("Auth token retrieved: " + result.token);
-            console.log("Sign-In provider: " + result.signInProvider);
-            console.log("Specific custom claim retrieved: " + result.claims.yourClaimKey); // or result.claims["yourClaimKey"]
+            loader.hide();
             vi.$navigateTo(App);        
           },
           function (errorMessage) {
@@ -124,7 +116,11 @@ export default {
         .catch(err => {
           console.error(err);
           loader.hide();          
-          this.alert(err);
+          if (err.includes('InvalidUser')){
+            this.alert('Invalid credentials!')
+          } else {
+            this.alert(err);            
+          }
         });
     },
     register() {
@@ -157,33 +153,6 @@ export default {
           this.alert(err);
         });
     },
-    forgotPassword() {
-      prompt({
-        title: "Forgot Password",
-        message:
-          "Enter the email address you used to register for APP NAME to reset your password.",
-        inputType: "email",
-        defaultText: "",
-        okButtonText: "Ok",
-        cancelButtonText: "Cancel"
-      }).then(data => {
-        if (data.result) {
-          loader.show();
-          userService
-            .resetPassword(data.text.trim())
-            .then(() => {
-              loader.hide();
-              this.alert(
-                "Your password was successfully reset. Please check your email for instructions on choosing a new password."
-              );
-            })
-            .catch(() => {
-              loader.hide();
-              this.alert(err);
-            });
-        }
-      });
-    },
     focusPassword() {
       this.$refs.password.nativeView.focus();
     },
@@ -194,7 +163,7 @@ export default {
     },
     alert(message) {
       return alert({
-        title: "APP NAME",
+        title: "TEENDOK",
         okButtonText: "OK",
         message: message
       });
