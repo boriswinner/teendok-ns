@@ -20,9 +20,13 @@ const NSVuexPersistent = store => {
 
 export default new Vuex.Store({
   state: {
-    notes: []
+    notes: [],
+    firebaseToken: null,
   },
   mutations: {
+    setFirebaseToken (state, token) {
+      state.firebaseToken = token
+    },
     clearNotes (state) {
       state.notes = []
     },
@@ -80,6 +84,9 @@ export default new Vuex.Store({
     getFullEvents: state => {
       return state.notes
     },    
+    getFirebaseToken: state => {
+      return state.firebaseToken;
+    }
     // getNotesByDate: state => date => {
     //   return state.notes[date]
     // }

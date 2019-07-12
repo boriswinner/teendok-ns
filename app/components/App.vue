@@ -100,6 +100,12 @@
       calendarEvents (){
         return this.$store.getters.getCalendarEvents
       },
+      fullEvents () {
+        return this.$store.getters.getFullEvents
+      },
+      firebaseToken () {
+        return this.$store.getters.getFirebaseToken
+      },
       selectedDayNotes (){
         let vi = this;
         let notes =  this.calendarEvents.filter(function (evt) {
@@ -299,9 +305,10 @@
       })
       let vi = this
       this.$store.commit('clearNotes') 
+      console.log(vi.firebaseToken)
 
       arraySerializingAxios.get("http://planner.skillmasters.ga/api/v1/events", {headers: {
-        "X-Firebase-Auth": "serega_mem"
+        "X-Firebase-Auth": vi.firebaseToken
       }}).then(result => {
         console.log(result.data)
         if (!result.data.success) return
@@ -315,7 +322,7 @@
         // console.log(event_ids)
         return arraySerializingAxios.get("http://planner.skillmasters.ga/api/v1/events/instances", {
           headers: {
-            "X-Firebase-Auth": "serega_mem"
+            "X-Firebase-Auth": vi.firebaseToken
           },
           params: {
             "id": event_ids,
@@ -326,7 +333,7 @@
             vi.serverInstances = result.data.data
             return arraySerializingAxios.get("http://planner.skillmasters.ga/api/v1/patterns", {
               headers: {
-                "X-Firebase-Auth": "serega_mem"
+                "X-Firebase-Auth": vi.firebaseToken
               },
               params: {
                 "events": event_ids,
