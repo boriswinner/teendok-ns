@@ -37,6 +37,7 @@
 	</Page>
 </template>
 <script>
+import App from '@/components/App'
 // A stub for a service that authenticates users.
 import firebase from "nativescript-plugin-firebase";
 const userService = {
@@ -62,22 +63,20 @@ const userService = {
   }
 };
 
-// A stub for the main page of your app. In a real app you’d put this page in its own .vue file.
-const HomePage = {
-  template: `
-	<Page>
-        <Label class="m-20" textWrap="true" text="You have successfully authenticated. This is where you build your core application functionality."></Label>
-	</Page>
-	`
-};
+var LoadingIndicator = require("nativescript-loading-indicator")
+  .LoadingIndicator;
+var loader = new LoadingIndicator();
 export default {
+  components: {
+    App,
+  },  
   data() {
     return {
       isLoggingIn: true,
       user: {
-        email: "foo@foo.com",
-        password: "foo",
-        confirmPassword: "foo"
+        email: "test@test.com",
+        password: "tester",
+        confirmPassword: "tester"
       }
     };
   },
@@ -90,6 +89,7 @@ export default {
         this.alert("Please provide both an email address and password.");
         return;
       }
+      loader.show();
       if (this.isLoggingIn) {
         this.login();
       } else {
@@ -100,25 +100,43 @@ export default {
       userService
         .login(this.user)
         .then(() => {
-          this.$navigateTo(HomePage);
+		  loader.hide();
+		  this.$navigateTo(App);          
         })
-        .catch(() => {
-          this.alert("Unfortunately we could not find your account.");
+        .catch(err => {
+          console.error(err);
+          loader.hide();          
+          this.alert(err);
         });
     },
     register() {
+      var validator = require("email-validator");
+      if (!validator.validate(this.user.email)) {
+        loader.hide();
+        this.alert("Please enter a valid email address.");
+        return;
+      }
       if (this.user.password != this.user.confirmPassword) {
-        this.alert("Your passwords do not match.");
+        loader.hide();
+		this.alert("Your passwords do not match.");
+        return;
+      }
+      if (this.user.password.length < 6) {
+        loader.hide();
+		this.alert("Your password must at least 6 characters.");
         return;
       }
       userService
         .register(this.user)
         .then(() => {
-          this.alert("Your account was successfully created.");
+          loader.hide();
+		  this.alert("Your account was successfully created.");
           this.isLoggingIn = true;
         })
-        .catch(() => {
-          this.alert("Unfortunately we were unable to create your account.");
+        .catch(err => {
+          console.error(err);
+          loader.hide();
+          this.alert(err);
         });
     },
     forgotPassword() {
@@ -132,17 +150,18 @@ export default {
         cancelButtonText: "Cancel"
       }).then(data => {
         if (data.result) {
+          loader.show();
           userService
             .resetPassword(data.text.trim())
             .then(() => {
+              loader.hide();
               this.alert(
                 "Your password was successfully reset. Please check your email for instructions on choosing a new password."
               );
             })
             .catch(() => {
-              this.alert(
-                "Unfortunately, an error occurred resetting your password."
-              );
+              loader.hide();
+              this.alert(err);
             });
         }
       });
@@ -164,6 +183,7 @@ export default {
     }
   }
 };
+
 </script>
 	
 <style scoped>

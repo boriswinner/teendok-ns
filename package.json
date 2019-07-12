@@ -16,7 +16,9 @@
   "dependencies": {
     "@vue/devtools": "^5.0.6",
     "axios": "^0.19.0",
+    "email-validator": "^2.0.4",
     "nativescript-calendar-weekview": "^1.0.6",
+    "nativescript-loading-indicator": "^2.5.2",
     "nativescript-localstorage": "^2.0.0",
     "nativescript-plugin-firebase": "^9.0.2",
     "nativescript-socketio": "^3.2.1",
