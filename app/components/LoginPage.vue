@@ -2,7 +2,6 @@
 	<Page>
 		<FlexboxLayout class="page">
 			<StackLayout class="form">
-				<Image class="logo" src="~/images/logo.png" />
 				<Label class="header" text="TEENDOK" />
 
 				<StackLayout class="input-field" marginBottom="25">
@@ -60,7 +59,7 @@ const userService = {
     return await firebase.resetPassword({
       email: email
     });
-  }
+  },
 };
 
 var LoadingIndicator = require("nativescript-loading-indicator")
@@ -97,11 +96,30 @@ export default {
       }
     },
     login() {
+      console.log()
       userService
         .login(this.user)
         .then(() => {
-		  loader.hide();
-		  this.$navigateTo(App);          
+      loader.hide();
+      console.log('aaa')
+      let vi = this
+      firebase.getAuthToken({
+        // default false, not recommended to set to true by Firebase but exposed for {N} devs nonetheless :)
+        forceRefresh: false
+      }).then(
+          function (result) {
+            console.log('aaa')
+            // for both platforms
+            vi.$store.commit('setFirebaseToken', result.token)   
+            console.log("Auth token retrieved: " + result.token);
+            console.log("Sign-In provider: " + result.signInProvider);
+            console.log("Specific custom claim retrieved: " + result.claims.yourClaimKey); // or result.claims["yourClaimKey"]
+            vi.$navigateTo(App);        
+          },
+          function (errorMessage) {
+            console.log("Auth result retrieval error: " + errorMessage);
+          }
+      );      		    
         })
         .catch(err => {
           console.error(err);
