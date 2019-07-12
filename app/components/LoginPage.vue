@@ -72,8 +72,8 @@ export default {
     return {
       isLoggingIn: true,
       user: {
-        email: null,
-        password: null,
+        email: 'boriswinner88@gmail.com',
+        password: 'Hahahaha1',
         confirmPassword: null
       }
     };
