@@ -352,11 +352,12 @@
         this.$showModal(NoteCreateEdit)
           .then (data => {
             let t = data
-            t.idstr = idstr
             console.log('!!!!!!!!!')
+            console.log(data)
             for (var property in t) {
               console.log( property + ': ' + t[property]+'; ')
             }            
+            this.pushNote(data.details,data.location,data.name,data.status,data.startDate, data.endDate)
             // vi.$store.commit('editNoteByIdstr', t) 
         })        
       },

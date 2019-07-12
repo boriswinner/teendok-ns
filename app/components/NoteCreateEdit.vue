@@ -15,9 +15,9 @@
             <TimePicker class="edit__time-picker" @loaded="setTimePicker24h" v-model="endTimeForm" />              
 
           <TextField ref="newNoteField" v-model="event.name" class="edit__new-note-text" 
-            @focus="isCreatingNewNote = true" @returnPress = "createNewNote" />
+            @focus="isCreatingNewNote = true"/>
           <Button text="OK" class="edit__new-note-button" @tap="closeNote"/>                   
-          <Button v-if="noteObject" text="Удалить заметку" class="edit__delete-note-button" @tap="createNewNote"/>    
+          <Button v-if="event" text="Удалить заметку" class="edit__delete-note-button" @tap="createNewNote"/>    
         </WrapLayout>
         </ScrollView>
     </Page>
@@ -78,7 +78,7 @@ export default {
           this.endTimeForm.getHours(),
           this.endTimeForm.getMinutes(),
         )        
-        this.$modal.close(this.note)      
+        this.$modal.close(this.event)      
       },
       setTimePicker24h (event){
         // THIS WILL WORK ONLY ON ANDROID, BUT IT IS POSSIBLE TO ADOPT FOR IOS
