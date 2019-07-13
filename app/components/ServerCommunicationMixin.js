@@ -21,11 +21,11 @@ export default {
           paramsSerializer: params => qs.stringify(params, {arrayFormat: 'repeat'}),
           headers: {"X-Firebase-Auth": vi.firebaseToken}
       });      
-      //debug only
-      // this.axiosAuthorized.interceptors.request.use(request => {
-      //   console.log('Starting Request', request)
-      //   return request
-      // })                
+      // debug only
+      this.axiosAuthorized.interceptors.request.use(request => {
+        console.log('Starting Request', request)
+        return request
+      })                
    },
    methods: {
       getNotesFromServer () {
@@ -103,18 +103,8 @@ export default {
          })
       },
       pushNoteToServer(details, location, name, status, started_at, ended_at) {
-         let event = {
-           details: details,
-           location: location,
-           name: name,
-           status: status,
-         }
-         let pattern = {
-           started_at: started_at,
-           ended_at: ended_at
-         }
          let vi = this
-         let tempAxios = this.axiosAuthorized        
+         let tempAxios = this.axiosAuthorized     
          tempAxios.post("http://planner.skillmasters.ga/api/v1/events", {
              details: details,
              location: location,
@@ -125,11 +115,14 @@ export default {
            console.log(result.data)
            let eventID = result.data.data[0].id
            console.log(eventID)
+           console.log('pushPattern')            
+           console.log(started_at)
+           console.log(ended_at)  
+           console.log(started_at.getTime())
+           console.log(ended_at.getTime())                      
            tempAxios.post("http://planner.skillmasters.ga/api/v1/patterns/?event_id="+eventID, {
-             pattern: {
                started_at: started_at.getTime(),
                ended_at: ended_at.getTime(),              
-             }
            }).then(result => {
              console.log('POST PATTERN SUCCESS')
              console.log(result.data)

@@ -57,19 +57,19 @@ export default {
     methods: {
       closeNote () { 
         this.event.startDate = new Date(
-          this.startDateForm.getYear(),
+          this.startDateForm.getFullYear(),
           this.startDateForm.getMonth(),
-          this.startDateForm.getDay(),
+          this.startDateForm.getDate(),
           this.startTimeForm.getHours(),
           this.startTimeForm.getMinutes(),
         )
         this.event.endDate = new Date(
-          this.endDateForm.getYear(),
+          this.endDateForm.getFullYear(),
           this.endDateForm.getMonth(),
-          this.endDateForm.getDay(),
+          this.endDateForm.getDate(),
           this.endTimeForm.getHours(),
           this.endTimeForm.getMinutes(),
-        )        
+        )
         this.$modal.close(this.event)      
       },
       setTimePicker24h (event){
