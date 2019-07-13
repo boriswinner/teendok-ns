@@ -217,6 +217,10 @@
             event: i
           }
         }).then (data => {
+            if (data == 'delete'){
+              this.deleteEventFromServer(i.id)
+              this.getNotesFromServer()
+            }
             let t = data
             console.log('!!!!!!!!!')
             for (var property in t) {

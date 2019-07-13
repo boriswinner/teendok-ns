@@ -17,7 +17,7 @@
           <TextField v-model="event.name" class="edit__new-note-text" hint="имя события..." />
           <TextField v-model="event.details" class="edit__new-note-text" hint="описание события..."/>
           <Button text="OK" class="edit__new-note-button" @tap="closeNote"/>                   
-          <Button v-if="event" text="Удалить заметку" class="edit__delete-note-button"/>    
+          <Button v-if="event" @tap="deleteNote" text="Удалить заметку" class="edit__delete-note-button"/>    
         </WrapLayout>
         </ScrollView>
     </Page>
@@ -26,8 +26,10 @@
 <script>
 import { isIOS, isAndroid } from "platform";
 var application = require('application');  
+import ServerCommunicationMixin from '@/components/ServerCommunicationMixin'
 
 export default {
+    mixins: [ServerCommunicationMixin],     
     name: 'NoteCreateEdit',
     props: {
       event: {
@@ -75,6 +77,9 @@ export default {
         } else{
           this.$modal.close(this.event)      
         }
+      },
+      deleteNote () {
+        this.$modal.close('delete')      
       },
       setTimePicker24h (event){
         // THIS WILL WORK ONLY ON ANDROID, BUT IT IS POSSIBLE TO ADOPT FOR IOS

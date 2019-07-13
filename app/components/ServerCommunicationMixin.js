@@ -71,7 +71,9 @@ export default {
                  vi.serverPatterns = vi.serverPatterns.reduce(function(map, obj) {
                      map[obj.event_id] = obj;
                      return map;
-                 }, {});                              
+                 }, {});
+                 console.log('PATTETNS')
+                 console.log(vi.serverPatterns)                              
                }).catch(function (error) {
                console.log(error);
                }).finally(function () {
@@ -135,12 +137,20 @@ export default {
            console.log('post event error')
            console.log(error);
          })        
-       
-         // if (event.startDate > event.endDate){
-         //   alert('Некорректное время!')
-         // } else {
-         //   this.$store.commit('addNote', event)          
-         // }
-       },      
+       },   
+       deleteEventFromServer (eventID) {
+         let vi = this
+         let tempAxios = this.axiosAuthorized
+         console.log(eventID)  
+         console.log(this.serverPatterns)
+         console.log(this.serverPatterns)
+         let patternID = vi.serverPatterns[eventID].id
+         tempAxios.delete("http://planner.skillmasters.ga/api/v1/events/"+eventID)
+         .then(result => {
+           console.log(result)   
+         }).catch(function (error) {
+            console.log(error);
+          })            
+       }   
    }
 }
