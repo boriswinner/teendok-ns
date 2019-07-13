@@ -32,7 +32,7 @@
             <StackLayout>     
               <GridLayout backgroundColor="white" columns="*, *, *, *, *, *, *, *" rows="60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60">
               <Label v-for = "(item, index) in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]" :key="index" :text="item" :row="index" col="0" backgroundColor="#ffd0c7"/>
-              <Label v-for= "(item, index) in selectedWeekNotes" class="home__weekview_cell" :key="'event'+index" :col="item.column+1" :row="item.row" :text="item.title" backgroundColor="#dbc7ff" :style="{'margin-top': item.marginTop+'px', 'margin-bottom': item.marginBottom+'px'}"/>                    
+              <Label v-for= "(item, index) in selectedWeekNotes" class="home__weekview_cell" :key="'event'+index" :col="item.column+1" :row="item.row" :text="item.title" backgroundColor="#dbc7ff" :style="{'margin-top': item.marginTop.toString(), 'margin-bottom': item.marginBottom.toString()}"/>                    
               </GridLayout>
             </StackLayout>
           </ScrollView>
@@ -115,14 +115,14 @@
         let vi = this
         let ev = []
         this.sameWeekDates(this.selectedDay).forEach(function(item, index, arr){
-          let t = vi.getNotesOfDay(item)
+          let t = vi.fullEventsOfDay(item)
           if (t.length >= 0){
             for (let i = 0; i < t.length; ++i){
               for (let j = t[i].startDate.getHours(); j <= t[i].endDate.getHours() ; ++j){
                 ev.push ({
                   column: index,
                   row: j,
-                  title: j ===  t[i].startDate.getHours() ? t[i].title : '',
+                  title: j ===  t[i].startDate.getHours() ? t[i].name : '',
                   marginTop: j === t[i].startDate.getHours() ? t[i].startDate.getMinutes() : 0,
                   marginBottom: j === t[i].endDate.getHours() ? t[i].endDate.getMinutes() : 0,
                 })
@@ -181,6 +181,16 @@
         }
         return week;        
       },
+      fullEventsOfDay (day){
+        let vi = this;
+        let notes =  this.fullEvents.filter(function (evt) {
+          // adding + is a hack to compare dates, also we dont handle timezones
+          return ((+vi.dateWithoutTime(evt.startDate) <= +vi.dateWithoutTime(day)) && 
+                  (+vi.dateWithoutTime(evt.endDate) >= +vi.dateWithoutTime(day)))
+        })
+        notes.sort((a,b) => (a.startDate > b.startDate) ? 1 : ((b.startDate > a.startDate) ? -1 : 0))      
+        return notes
+      },      
       getNotesOfDay(day) {
         let vi = this;
         let notes = this.calendarEvents.filter(function (evt) {
