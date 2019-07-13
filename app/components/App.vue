@@ -63,7 +63,6 @@
           <TextField ref="newNoteField" v-model="newNoteText" :style="{ width: newNoteFieldWidth}" class="home__new-note-text" 
             @focus="openNewNoteDialog" @returnPress = "createNewNote" hint="Создать новую заметку..." />      
           <!-- this thing is for losing focus on textedit -->
-          <TextField ref="dummy" height="0" id="dummy"></TextField>
         </WrapLayout>    
     </Page>
 </template>
@@ -78,8 +77,6 @@
   import { type } from 'os';
   import NoteCreateEdit from '@/components/NoteCreateEdit'
   import ServerCommunicationMixin from '@/components/ServerCommunicationMixin'
-  import axios from "axios";
-  var qs = require('qs');
 
   var application = require('application');  
 
@@ -208,20 +205,6 @@
         this.selectedDay = args.date
         // console.log(this.selectedWeekDays)
       },         
-      createNewNoteRevertUIState(){
-        //lose focus on main textEdit
-        this.$refs.dummy.nativeView.focus()
-        this.newNoteText = ""
-        this.dismissSoftKeyboard()
-      },
-      createNewNote(){
-        if (this.isCreatingNewNote){
-          this.pushNote(this.selectedDay, this.newNoteStartTime, this.newNoteEndTime, this.newNoteText)
-          this.createNewNoteRevertUIState()
-        } else {
-          console.log("ЕГГОГ")
-        }
-      },
       openNewNoteDialog() {
         this.isCreatingNewNote = true; 
         this.$showModal(NoteCreateEdit)
@@ -232,7 +215,7 @@
             for (var property in t) {
               console.log( property + ': ' + t[property]+'; ')
             }            
-            this.pushNote(data.details,data.location,data.name,data.status,data.startDate, data.endDate)
+            this.pushNoteToServer(data.details,data.location,data.name,data.status,data.startDate, data.endDate)
             // vi.$store.commit('editNoteByIdstr', t) 
         })        
       },
@@ -267,13 +250,6 @@
         let picker = event.object.nativeView
         picker.setIs24HourView(java.lang.Boolean.TRUE)
       },
-      backEvent(args) {
-        // THIS WILL WORK ONLY ON ANDROID, BUT IT IS POSSIBLE TO ADOPT FOR IOS
-        if (this.isCreatingNewNote){
-          args.cancel = true;
-          this.createNewNoteRevertUIState()
-        }
-      }
     },
     created() {
       this.selectedDay = new Date();
@@ -281,10 +257,6 @@
       this.newNoteEndTime = new Date();
     },
     mounted: function () {
-      //bind back button
-      if (isAndroid) {
-          application.android.on(application.AndroidApplication.activityBackPressedEvent, this.backEvent);
-      }      
       // this.pushNote('det','loc','nam','sta',new Date(), new Date())
       this.getNotesFromServer()
     }    
