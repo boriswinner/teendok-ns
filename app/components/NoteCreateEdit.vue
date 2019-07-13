@@ -17,7 +17,7 @@
           <TextField ref="newNoteField" v-model="event.name" class="edit__new-note-text" 
             @focus="isCreatingNewNote = true"/>
           <Button text="OK" class="edit__new-note-button" @tap="closeNote"/>                   
-          <Button v-if="event" text="Удалить заметку" class="edit__delete-note-button" @tap="createNewNote"/>    
+          <Button v-if="event" text="Удалить заметку" class="edit__delete-note-button"/>    
         </WrapLayout>
         </ScrollView>
     </Page>
@@ -48,20 +48,12 @@ export default {
     },
     data (){
         return {
-            startDateForm: null,
-            endDateForm: null,
-            startTimeForm: null,
-            endTimeForm: null
+            startDateForm: new Date(),
+            endDateForm: new Date(),
+            startTimeForm: new Date(),
+            endTimeForm: new Date()
         }
     }, 
-    created() {
-      if (this.event){
-        this.startDateForm = this.event.startDate
-        this.startTimeForm = this.event.startDate
-        this.endDateForm = this.event.endDate
-        this.endTimeForm = this.event.endDate
-      }
-    },
     methods: {
       closeNote () { 
         this.event.startDate = new Date(
@@ -89,7 +81,14 @@ export default {
     mounted () {
       if (isAndroid) {
           application.android.on(application.AndroidApplication.activityBackPressedEvent, this.$modal.close);
-      }            
+      }
+      for (var property in this.event) {
+        console.log( property + ': ' + this.event[property]+'; ')
+      }       
+      this.startDateForm = this.event.startDate
+      this.startTimeForm = this.event.startDate
+      this.endDateForm = this.event.endDate
+      this.endTimeForm = this.event.endDate                  
     }
 }
 </script>

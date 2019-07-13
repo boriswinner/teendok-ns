@@ -365,19 +365,17 @@
       tapNote(event){
         let vi = this
         let i = event.item
-        let idstr = (i.title + i.startDate.toString() + i.endDate.toString()).toString().replace(/[^A-Z0-9]/ig, "") 
         this.$showModal(NoteCreateEdit, {
           props: {
-            noteObject: i
+            event: i
           }
         }).then (data => {
             let t = data
-            t.idstr = idstr
             console.log('!!!!!!!!!')
             for (var property in t) {
               console.log( property + ': ' + t[property]+'; ')
             }            
-            vi.$store.commit('editNoteByIdstr', t) 
+            vi.$store.commit('editNote', t) 
         })
       },
       disableCalendarGestures (event){

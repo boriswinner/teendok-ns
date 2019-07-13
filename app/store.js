@@ -32,43 +32,12 @@ export default new Vuex.Store({
     },
     addNote (state, event) {
       console.log('commit')
-      if (!event.id) {
-        event.id = state.notes.length
-      }
-      event["idstr"] = (event.name + event.startDate.toString() + event.endDate.toString()).toString().replace(/[^A-Z0-9]/ig, "")   
+      event.positionInArray = state.notes.length
       state.notes = state.notes.concat([event])
     },
     editNote (state, event) {
-      event["idstr"] = (event.name + event.startDate.toString() + event.endDate.toString()).toString().replace(/[^A-Z0-9]/ig, "") 
-      state.notes[event.id] = event
+      state.notes[event.positionInArray] = event
     },
-    editNoteByIdstr (state, event) {
-      console.log('!!!!')
-      console.log(event.idstr)
-      console.log('-----')
-      for (let i = 0; i < state.notes.length; ++i){
-        for (var property in state.notes[i]) {
-          console.log( property + ': ' + state.notes[i][property]+'; ')
-        }                    
-      }
-      console.log('----')
-      let id  = state.notes.filter(
-        function findByIdString (note){
-          console.log('note:')
-          console.log(note.idstr)
-          console.log('event:')
-          console.log(event.idstr)
-          return note.idstr === event.idstr
-        })
-      'id:'
-      console.log(id)
-      console.log(id[0].id)
-      event["idstr"] = (event.name + event.startDate.toString() + event.endDate.toString()).toString().replace(/[^A-Z0-9]/ig, "") 
-      event.id = id[0].id
-      state.notes[id[0].id] = event    
-      state.notes = state.notes.concat('a')
-      state.notes.pop()
-    }
   },
   actions: {
 
