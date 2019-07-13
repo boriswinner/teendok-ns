@@ -54,8 +54,16 @@
                 <WrapLayout class="home__notes-list-item">
                   <Label class="home__notes-list-item-note" :text="event.name" />
                   <Label class="home__notes-list-item-note" :text="event.details" />
-                  <Label class="home__notes-list-item-time" :text="('0'+event.startDate.getHours()).slice(-2)  + ':' + ('0'+event.startDate.getMinutes()).slice(-2) + ' - '" />
-                  <Label class="home__notes-list-item-time" :text="('0'+event.endDate.getHours()).slice(-2)+ ':' + ('0'+event.endDate.getMinutes()).slice(-2)" />
+                  <Label class="home__notes-list-item-time" :text="
+                    ((+dateWithoutTime(event.startDate) != +dateWithoutTime(event.endDate)) ?
+                    ('0'+event.startDate.getDate()).slice(-2) + '.' + ('0'+event.startDate.getMonth()).slice(-2) : '') + ' ' +
+                    ('0'+event.startDate.getHours()).slice(-2)  + ':' + 
+                    ('0'+event.startDate.getMinutes()).slice(-2) + ' - '" />
+                  <Label class="home__notes-list-item-time" :text="
+                    ((+dateWithoutTime(event.startDate) != +dateWithoutTime(event.endDate)) ?
+                    ('0'+event.endDate.getDate()).slice(-2) + '.' + ('0'+event.endDate.getMonth()).slice(-2) : '') + ' ' +
+                    ('0'+event.endDate.getHours()).slice(-2)  + ':' + 
+                    ('0'+event.endDate.getMinutes()).slice(-2)" />
                 </WrapLayout>
               </v-template>
             </ListView> 
@@ -96,7 +104,8 @@
         let vi = this;
         let notes =  this.fullEvents.filter(function (evt) {
           // adding + is a hack to compare dates, also we dont handle timezones
-          return +vi.dateWithoutTime(evt.startDate) === +vi.dateWithoutTime(vi.selectedDay)
+          return ((+vi.dateWithoutTime(evt.startDate) <= +vi.dateWithoutTime(vi.selectedDay)) && 
+                  (+vi.dateWithoutTime(evt.endDate) >= +vi.dateWithoutTime(vi.selectedDay)))
         })
         notes.sort((a,b) => (a.startDate > b.startDate) ? 1 : ((b.startDate > a.startDate) ? -1 : 0))      
         return notes
@@ -191,11 +200,11 @@
         this.$showModal(NoteCreateEdit)
           .then (data => {
             let t = data
-            console.log('!!!!!!!!!')
-            console.log(data)
-            for (var property in t) {
-              console.log( property + ': ' + t[property]+'; ')
-            }            
+            // console.log('!!!!!!!!!')
+            // console.log(data)
+            // for (var property in t) {
+            //   console.log( property + ': ' + t[property]+'; ')
+            // }            
             this.pushNoteToServer(data.details,data.location,data.name,data.status,data.startDate, data.endDate)
             // vi.$store.commit('editNoteByIdstr', t) 
         })        
