@@ -60,8 +60,8 @@
               </v-template>
             </ListView> 
           </ScrollView>            
-          <TextField ref="newNoteField" v-model="newNoteText" :style="{ width: newNoteFieldWidth}" class="home__new-note-text" 
-            @focus="openNewNoteDialog" @returnPress = "createNewNote" hint="Создать новую заметку..." />      
+          <button text="Создать заметку" class="home__new-note-text" 
+            @tap="openNewNoteDialog"/>      
           <!-- this thing is for losing focus on textedit -->
         </WrapLayout>    
     </Page>
@@ -123,13 +123,6 @@
         })
         return ev
       },   
-      newNoteFieldWidth () {
-        if (this.isCreatingNewNote) {
-          return '90%'
-        } else {
-          return '100%'
-        }
-      },
       dayViewStyle(){
         let t = new calendarModule.CalendarDayViewStyle()
         let dayEventsViewStyle = new calendarModule.DayEventsViewStyle();
@@ -140,22 +133,11 @@
     },
     data () {
       return {
-        newNoteText: null,
-        newNoteStartTime: {
-          type: Date,
-        },
-        newNoteEndTime: {
-          type: Date,
-        },
-        isCreatingNewNote: false,
         selectedDay: {
           type: Date,
         },
         calendarMode: {
           default: 0
-        },
-        tres: {
-          default: null
         },
       }
     },
@@ -206,7 +188,6 @@
         // console.log(this.selectedWeekDays)
       },         
       openNewNoteDialog() {
-        this.isCreatingNewNote = true; 
         this.$showModal(NoteCreateEdit)
           .then (data => {
             let t = data
@@ -253,8 +234,6 @@
     },
     created() {
       this.selectedDay = new Date();
-      this.newNoteStartTime = new Date();
-      this.newNoteEndTime = new Date();
     },
     mounted: function () {
       // this.pushNote('det','loc','nam','sta',new Date(), new Date())
@@ -310,6 +289,7 @@
 
       &__new-note-text {
         height: 10%;
+        width: 100%;
       }
 
       &__new-note-button{
