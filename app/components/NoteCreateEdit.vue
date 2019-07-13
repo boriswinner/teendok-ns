@@ -14,8 +14,8 @@
             <DatePicker class="edit__time-picker" v-model="endDateForm" /> 
             <TimePicker class="edit__time-picker" @loaded="setTimePicker24h" v-model="endTimeForm" />              
 
-          <TextField ref="newNoteField" v-model="event.name" class="edit__new-note-text" 
-            @focus="isCreatingNewNote = true"/>
+          <TextField v-model="event.name" class="edit__new-note-text" hint="имя события..." />
+          <TextField v-model="event.details" class="edit__new-note-text" hint="описание события..."/>
           <Button text="OK" class="edit__new-note-button" @tap="closeNote"/>                   
           <Button v-if="event" text="Удалить заметку" class="edit__delete-note-button"/>    
         </WrapLayout>
@@ -70,7 +70,11 @@ export default {
           this.endTimeForm.getHours(),
           this.endTimeForm.getMinutes(),
         )
-        this.$modal.close(this.event)      
+        if (+this.event.startDate > +this.event.endDate){
+          alert('Событие должно заканчиваться позже, чем началось!')
+        } else{
+          this.$modal.close(this.event)      
+        }
       },
       setTimePicker24h (event){
         // THIS WILL WORK ONLY ON ANDROID, BUT IT IS POSSIBLE TO ADOPT FOR IOS
