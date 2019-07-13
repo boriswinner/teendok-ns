@@ -258,6 +258,7 @@
           }).then(result => {
             console.log('POST PATTERN SUCCESS')
             console.log(result.data)
+            this.getNotesFromServer()
           }).catch(function (error) {
             console.log('post event error')
             console.log(error);
