@@ -91,7 +91,8 @@ export default {
                      details: vi.serverEvents[i.event_id].details,
                      status: vi.serverEvents[i.event_id].status,
                      location: vi.serverEvents[i.event_id].location,
-                     timezone: vi.serverPatterns[i.event_id].timezone
+                     timezone: vi.serverPatterns[i.event_id].timezone,
+                     rrule: vi.serverPatterns[i.event_id].rrule
                    }
                    console.log(t)
                    vi.$store.commit('addNote', t) 
@@ -104,7 +105,7 @@ export default {
            console.log(error);
          })
       },
-      pushNoteToServer(details, location, name, status, started_at, ended_at) {
+      pushNoteToServer(details, location, name, status, started_at, ended_at, rrule) {
          let vi = this
          let tempAxios = this.axiosAuthorized     
          tempAxios.post("http://planner.skillmasters.ga/api/v1/events", {
@@ -124,7 +125,8 @@ export default {
            console.log(ended_at.getTime())                      
            tempAxios.post("http://planner.skillmasters.ga/api/v1/patterns/?event_id="+eventID, {
                started_at: started_at.getTime(),
-               ended_at: ended_at.getTime(),              
+               ended_at: ended_at.getTime(),    
+               rrule: rrule          
            }).then(result => {
              console.log('POST PATTERN SUCCESS')
              console.log(result.data)

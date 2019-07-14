@@ -257,6 +257,7 @@
     },
     created() {
       this.selectedDay = new Date();
+      this.$store.commit('clearNotes') 
     },
     mounted: function () {
       // this.pushNote('det','loc','nam','sta',new Date(), new Date())

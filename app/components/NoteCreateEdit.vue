@@ -11,9 +11,14 @@
             <StackLayout verticalAlignment="center">
                 <Label class="edit__time-picker-label" text="Конец:" />
             </StackLayout>          
-            <DatePicker class="edit__time-picker" v-model="endDateForm" /> 
-            <TimePicker class="edit__time-picker" @loaded="setTimePicker24h" v-model="endTimeForm" />              
-
+            <DatePicker v-show="repeatCountForm == ''" class="edit__time-picker" v-model="endDateForm" /> 
+            <TimePicker v-show="repeatCountForm == ''" class="edit__time-picker" @loaded="setTimePicker24h" v-model="endTimeForm" />              
+            <ListPicker class="edit__repeat-picker" :items="Object.keys(repeatFrequencies)" v-model="repeatFrequencyForm" />
+            <StackLayout v-show="repeatFrequencyForm" verticalAlignment="center">
+                <Label class="edit__time-picker-label" text="Введите интервал повторений..." />
+            </StackLayout>                      
+            <TextField v-show="repeatFrequencyForm" class="edit__new-note-text" keyboardType="number" v-model="repeatIntervalForm" />
+            <TextField v-show="repeatFrequencyForm" class="edit__new-note-text" keyboardType="number" v-model="repeatCountForm" hint="(Опционально) Введите количество повторений..." />
           <TextField v-model="event.name" class="edit__new-note-text" hint="имя события..." />
           <TextField v-model="event.details" class="edit__new-note-text" hint="описание события..."/>
           <Button text="OK" class="edit__new-note-button" @tap="closeNote"/>                   
@@ -43,17 +48,28 @@ export default {
             details:"",
             status: null,
             location: null,
-            timezone: null
+            timezone: null,
+            rrule: null
           }
         }
-      }
+      },
     },
     data (){
         return {
             startDateForm: new Date(),
             endDateForm: new Date(),
             startTimeForm: new Date(),
-            endTimeForm: new Date()
+            endTimeForm: new Date(),
+            repeatFrequencies: {
+              'Без повторений': null,
+              'Ежедневно': 'DAILY',
+              'Еженедельно': 'WEEKLY',
+              'Ежемесячно': 'MONTHLY',
+              'Ежегодно': 'YEARLY'
+            },
+            repeatFrequencyForm: null,
+            repeatIntervalForm: 1,
+            repeatCountForm: ''
         }
     }, 
     methods: {
@@ -72,6 +88,10 @@ export default {
           this.endTimeForm.getHours(),
           this.endTimeForm.getMinutes(),
         )
+        if (this.repeatFrequencyForm){
+          this.event.rrule = "FREQ="+this.repeatFrequencies[this.repeatFrequencyForm]+';INTERVAL='+this.repeatIntervalForm
+          console.log(this.event.rrule)
+        }
         if (+this.event.startDate > +this.event.endDate){
           alert('Событие должно заканчиваться позже, чем началось!')
         } else{
@@ -121,18 +141,22 @@ export default {
       }
 
       &__new-note-text {
-        width: 75%;
+        width: 100%;
         height: 10%;
       }
 
       &__new-note-button{
-        width: 25%;
+        width: 100%;
       }      
 
       &__delete-note-button {
           width: 100%;
           background-color: #ED0A51;
           color: white;
+      }
+
+      &__repeat-picker {
+          width: 100%;
       }
     }
 </style>
