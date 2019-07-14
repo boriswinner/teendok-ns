@@ -3,32 +3,32 @@
       <ScrollView>
         <WrapLayout backgroundColor="white">         
             <StackLayout verticalAlignment="center">
-                <Label class="edit__time-picker-label" text="Начало события (если событие повторяется, минимальные дата и время, в которое может начаться событие):" />
+                <Label textWrap="true" class="edit__time-picker-label" text="Начало события (если событие повторяется, минимальные дата и время, в которое может начаться событие):" />
             </StackLayout>          
             <DatePicker class="edit__date-picker" v-model="startDateForm" />
             <TimePicker class="edit__time-picker" @loaded="setTimePicker24h" v-model="startTimeForm" />
 
             <StackLayout verticalAlignment="center">
-                <Label class="edit__time-picker-label" text="Конец события: (если событие повторяется, остальные экземпляры создаются аналогичным образом с такой же длительностью" />
+                <Label textWrap="true" class="edit__time-picker-label" text="Конец события: (если событие повторяется, остальные экземпляры создаются аналогичным образом с такой же длительностью):" />
             </StackLayout>          
             <DatePicker class="edit__time-picker" v-model="durationDateForm" /> 
             <TimePicker class="edit__time-picker" @loaded="setTimePicker24h" v-model="durationTimeForm" />              
             <StackLayout v-show="repeatFrequencyForm" verticalAlignment="center">
-                <Label class="edit__time-picker-label" text="Повторять каждые..." />
+                <Label textWrap="true" class="edit__time-picker-label" text="Повторять каждые..." />
             </StackLayout>                      
             <TextField v-show="repeatFrequencyForm" class="edit__new-note-text" keyboardType="number" v-model="repeatIntervalForm" />            
             <ListPicker class="edit__repeat-picker" :items="Object.keys(repeatFrequencies)" v-model="repeatFrequencyForm" />
             <StackLayout v-show="repeatFrequencyForm == 2" verticalAlignment="center">
-                <Label class="edit__time-picker-label" text="По каким дням недели повторять событие?" />
+                <Label textWrap="true" class="edit__time-picker-label" text="По каким дням недели повторять событие?" />
             </StackLayout>                   
             <button v-show="repeatFrequencyForm == 2" v-for="(item,index) in Object.keys(byDay)" 
                     :class="{'edit__weekday-button-active' : byDayForm[index] == true}" :key="index+item" @tap="byDayForm[index] = !byDayForm[index]; $forceUpdate();" :text="item"/>         
-            <StackLayout verticalAlignment="center">
-                <Label class="edit__time-picker-label" text="Максимальные дата и время, в которое может начаться событие:" />
+            <StackLayout v-show="repeatFrequencyForm" verticalAlignment="center">
+                <Label textWrap="true" class="edit__time-picker-label" text="Максимальные дата и время, в которое может начаться событие:" />
             </StackLayout>                              
             <DatePicker v-show="repeatFrequencyForm" class="edit__time-picker" v-model="endDateForm" /> 
             <TimePicker v-show="repeatFrequencyForm" class="edit__time-picker" @loaded="setTimePicker24h" v-model="endTimeForm" />            
-            <TextField v-show="repeatFrequencyForm" class="edit__new-note-text" keyboardType="number" v-model="repeatCountForm" hint="(Опционально) Введите количество повторений..." />
+            <!-- <TextField v-show="repeatFrequencyForm" class="edit__new-note-text" keyboardType="number" v-model="repeatCountForm" hint="(Опционально) Введите количество повторений..." /> -->
           <TextField v-model="event.name" class="edit__new-note-text" hint="имя события..." />
           <TextField v-model="event.details" class="edit__new-note-text" hint="описание события..."/>
           <Button text="OK" class="edit__new-note-button" @tap="closeNote"/>                   

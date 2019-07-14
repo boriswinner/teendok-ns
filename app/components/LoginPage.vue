@@ -5,30 +5,30 @@
 				<Label class="header" text="TEENDOK" />
 
 				<StackLayout class="input-field" marginBottom="25">
-					<TextField class="input" hint="Email" keyboardType="email" autocorrect="false" autocapitalizationType="none" v-model="user.email"
+					<TextField class="input" hint="Эл. почта" keyboardType="email" autocorrect="false" autocapitalizationType="none" v-model="user.email"
 					 returnKeyType="next" @returnPress="focusPassword" fontSize="18" />
 					<StackLayout class="hr-light" />
 				</StackLayout>
 
 				<StackLayout class="input-field" marginBottom="25">
-					<TextField ref="password" class="input" hint="Password" secure="true" v-model="user.password" :returnKeyType="isLoggingIn ? 'done' : 'next'"
+					<TextField ref="password" class="input" hint="Пароль" secure="true" v-model="user.password" :returnKeyType="isLoggingIn ? 'done' : 'next'"
 					 @returnPress="focusConfirmPassword" fontSize="18" />
 					<StackLayout class="hr-light" />
 				</StackLayout>
 
 				<StackLayout v-show="!isLoggingIn" class="input-field">
-					<TextField ref="confirmPassword" class="input" hint="Confirm password" secure="true" v-model="user.confirmPassword" returnKeyType="done"
+					<TextField ref="confirmPassword" class="input" hint="Подтвердите пароль" secure="true" v-model="user.confirmPassword" returnKeyType="done"
 					 fontSize="18" />
 					<StackLayout class="hr-light" />
 				</StackLayout>
 
-				<Button :text="isLoggingIn ? 'Log In' : 'Sign Up'" @tap="submit" class="btn btn-primary m-t-20" />
+				<Button :text="isLoggingIn ? 'Войти' : 'Зарегистрироваться'" @tap="submit" class="btn btn-primary m-t-20" />
 			</StackLayout>
 
 			<Label class="login-label sign-up-label" @tap="toggleForm">
 	          <FormattedString>
-	            <Span :text="isLoggingIn ? 'Don’t have an account? ' : 'Back to Login'" />
-	            <Span :text="isLoggingIn ? 'Sign up' : ''" class="bold" />
+	            <Span :text="isLoggingIn ? 'Нет аккаунта? ' : 'Назад ко входу'" />
+	            <Span :text="isLoggingIn ? 'Зарегистрируйтесь!' : ''" class="bold" />
 	          </FormattedString>
 	        </Label>
 		</FlexboxLayout>
@@ -84,7 +84,7 @@ export default {
     },
     submit() {
       if (!this.user.email || !this.user.password) {
-        this.alert("Please provide both an email address and password.");
+        this.alert("Введите почту и пароль.");
         return;
       }
       loader.show();
@@ -117,7 +117,7 @@ export default {
           console.error(err);
           loader.hide();          
           if (err.includes('InvalidUser')){
-            this.alert('Invalid credentials!')
+            this.alert('Некорректные данные учётной записи!')
           } else {
             this.alert(err);            
           }
@@ -127,24 +127,24 @@ export default {
       var validator = require("email-validator");
       if (!validator.validate(this.user.email)) {
         loader.hide();
-        this.alert("Please enter a valid email address.");
+        this.alert("Пожалуйста, введите действительный адрес электронной почты");
         return;
       }
       if (this.user.password != this.user.confirmPassword) {
         loader.hide();
-		this.alert("Your passwords do not match.");
+		this.alert("Ваши пароли не совпадают");
         return;
       }
       if (this.user.password.length < 6) {
         loader.hide();
-		this.alert("Your password must at least 6 characters.");
+		this.alert("Пароль должен быть от 6 символов");
         return;
       }
       userService
         .register(this.user)
         .then(() => {
           loader.hide();
-		  this.alert("Your account was successfully created.");
+		  this.alert("Учётная запись успешно создана!");
           this.isLoggingIn = true;
         })
         .catch(err => {
