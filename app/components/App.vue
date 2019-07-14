@@ -227,8 +227,9 @@
             console.log('!!!!!!!!!')
             for (var property in t) {
               console.log( property + ': ' + t[property]+'; ')
-            }            
-            vi.$store.commit('editNote', t) 
+            }  
+            this.updateNoteOnServer(data.id, data.patternID, data.details,data.location,data.name,data.status,data.startDate, data.endDate, data.duration, data.rrule)          
+            // vi.$store.commit('editNote', t) 
         })
       },
       disableCalendarGestures (event){

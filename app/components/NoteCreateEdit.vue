@@ -55,6 +55,7 @@ export default {
             startDate: new Date(),
             duration: new Date(),
             endDate: new Date(),
+            patternEndDate: new Date(),
             name: "",
             details:"",
             status: null,
@@ -101,6 +102,9 @@ export default {
         }
     }, 
     methods: {
+      getKeyByValue(object, value) {
+        return Object.keys(object).find(key => object[key] === value);
+      },      
       closeNote () { 
         this.event.startDate = new Date(
           this.startDateForm.getFullYear(),
@@ -140,6 +144,7 @@ export default {
           console.log(this.event.rrule)
         }
         if (+this.event.startDate > +singleEventEndDate){
+          alert(this.event.startDate + ' ' + singleEventEndDate)
           alert('Событие должно заканчиваться позже, чем началось!')
         } else{
           this.$modal.close(this.event)      
@@ -163,8 +168,19 @@ export default {
       }       
       this.startDateForm = this.event.startDate
       this.startTimeForm = this.event.startDate
-      this.endDateForm = this.event.endDate
-      this.endTimeForm = this.event.endDate                  
+      this.durationDateForm = this.event.endDate
+      this.durationTimeForm = this.event.endDate 
+      this.endDateForm = this.event.patternEndDate
+      this.endTimeForm = this.event.patternEndDate
+      let freqSTr = this.event.rrule.match(/FREQ=[A-z]+/i)
+      if (freqSTr){
+        this.repeatFrequencyForm = Object.values(this.repeatFrequencies).indexOf(freqSTr[0].slice(5))
+      }         
+      let intervalStr = this.event.rrule.match(/INTERVAL=[0-9]+/i)
+      if (intervalStr){
+        this.repeatIntervalForm = intervalStr[0].slice(9)
+      }
+      console.log(intervalStr)  
     }
 }
 </script>

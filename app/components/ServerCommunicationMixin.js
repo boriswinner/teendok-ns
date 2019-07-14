@@ -85,8 +85,10 @@ export default {
                    // console.log(vi.serverEvents)
                    let t = {
                      id: i.event_id,
+                     patternID: vi.serverPatterns[i.event_id].id,
                      startDate: new Date(i.started_at),
                      endDate: new Date(i.ended_at),
+                     patternEndDate: new Date(vi.serverPatterns[i.event_id].ended_at),
                      name: vi.serverEvents[i.event_id].name,
                      details: vi.serverEvents[i.event_id].details,
                      status: vi.serverEvents[i.event_id].status,
@@ -104,6 +106,44 @@ export default {
          }).catch(function (error) {
            console.log(error);
          })
+      },
+      updateNoteOnServer(eventID, patternID, details, location, name, status, started_at, ended_at, duration, rrule){
+         let vi = this
+         let tempAxios = this.axiosAuthorized   
+         console.log(started_at)  
+         console.log(ended_at)  
+         tempAxios.patch("http://planner.skillmasters.ga/api/v1/events/"+eventID, {
+             details: details,
+             location: location,
+             name: name,
+             status: status,            
+         }).then(result => {
+           console.log('post event')
+           console.log(result.data)
+           let eventID = result.data.data[0].id
+           console.log('updatePattern')            
+           let params = {
+            started_at: started_at.getTime(),
+            duration: duration,
+            rrule: rrule                        
+           }       
+           //this is КОСТЫЛЬ because of server's bug             
+           if (ended_at != null){
+              params['ended_at'] = ended_at.getTime()
+           }
+           tempAxios.patch("http://planner.skillmasters.ga/api/v1/patterns/"+patternID, params)
+           .then(result => {
+             console.log('POST PATTERN SUCCESS')
+             console.log(result.data)
+             this.getNotesFromServer()
+           }).catch(function (error) {
+             console.log('post event error')
+             console.log(error);
+           })  
+         }).catch(function (error) {
+           console.log('post event error')
+           console.log(error);
+         })             
       },
       pushNoteToServer(details, location, name, status, started_at, ended_at, duration, rrule) {
          let vi = this
