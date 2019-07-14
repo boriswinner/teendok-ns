@@ -172,15 +172,25 @@ export default {
       this.durationTimeForm = this.event.endDate 
       this.endDateForm = this.event.patternEndDate
       this.endTimeForm = this.event.patternEndDate
-      let freqSTr = this.event.rrule.match(/FREQ=[A-z]+/i)
-      if (freqSTr){
-        this.repeatFrequencyForm = Object.values(this.repeatFrequencies).indexOf(freqSTr[0].slice(5))
-      }         
-      let intervalStr = this.event.rrule.match(/INTERVAL=[0-9]+/i)
-      if (intervalStr){
-        this.repeatIntervalForm = intervalStr[0].slice(9)
-      }
-      console.log(intervalStr)  
+      if (this.event.rrule){
+        let freqSTr = this.event.rrule.match(/FREQ=[A-z]+/i)
+        if (freqSTr){
+          this.repeatFrequencyForm = Object.values(this.repeatFrequencies).indexOf(freqSTr[0].slice(5))
+        }         
+        let intervalStr = this.event.rrule.match(/INTERVAL=[0-9]+/i)
+        if (intervalStr){
+          this.repeatIntervalForm = intervalStr[0].slice(9)
+        }
+        let byDayArr = this.event.rrule.match(/BYDAY=[A-z,]+/gi);
+        if (byDayArr){
+          byDayArr = byDayArr[0].slice(6).split(',')
+          console.log(byDayArr)
+          byDayArr.forEach(element => {
+            this.byDayForm[Object.values(this.byDay).indexOf(element)] = true            
+          });
+          console.log(this.byDayForm)
+        }        
+      }       
     }
 }
 </script>
