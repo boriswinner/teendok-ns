@@ -105,7 +105,7 @@ export default {
            console.log(error);
          })
       },
-      pushNoteToServer(details, location, name, status, started_at, ended_at, rrule) {
+      pushNoteToServer(details, location, name, status, started_at, ended_at, duration, rrule) {
          let vi = this
          let tempAxios = this.axiosAuthorized     
          tempAxios.post("http://planner.skillmasters.ga/api/v1/events", {
@@ -122,12 +122,17 @@ export default {
            console.log(started_at)
            console.log(ended_at)  
            console.log(started_at.getTime())
-           console.log(ended_at.getTime())                      
-           tempAxios.post("http://planner.skillmasters.ga/api/v1/patterns/?event_id="+eventID, {
-               started_at: started_at.getTime(),
-               ended_at: ended_at.getTime(),    
-               rrule: rrule          
-           }).then(result => {
+           let params = {
+            started_at: started_at.getTime(),
+            duration: duration,
+            rrule: rrule                        
+           }       
+           //this is КОСТЫЛЬ because of server's bug             
+           if (ended_at != null){
+              params['ended_at'] = ended_at.getTime()
+           }
+           tempAxios.post("http://planner.skillmasters.ga/api/v1/patterns/?event_id="+eventID, params)
+           .then(result => {
              console.log('POST PATTERN SUCCESS')
              console.log(result.data)
              this.getNotesFromServer()

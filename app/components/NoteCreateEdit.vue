@@ -3,21 +3,31 @@
       <ScrollView>
         <WrapLayout backgroundColor="white">         
             <StackLayout verticalAlignment="center">
-                <Label class="edit__time-picker-label" text="Начало:" />
+                <Label class="edit__time-picker-label" text="Начало события (если событие повторяется, минимальные дата и время, в которое может начаться событие):" />
             </StackLayout>          
             <DatePicker class="edit__date-picker" v-model="startDateForm" />
             <TimePicker class="edit__time-picker" @loaded="setTimePicker24h" v-model="startTimeForm" />
 
             <StackLayout verticalAlignment="center">
-                <Label class="edit__time-picker-label" text="Конец:" />
+                <Label class="edit__time-picker-label" text="Конец события: (если событие повторяется, остальные экземпляры создаются аналогичным образом с такой же длительностью" />
             </StackLayout>          
-            <DatePicker v-show="repeatCountForm == ''" class="edit__time-picker" v-model="endDateForm" /> 
-            <TimePicker v-show="repeatCountForm == ''" class="edit__time-picker" @loaded="setTimePicker24h" v-model="endTimeForm" />              
-            <ListPicker class="edit__repeat-picker" :items="Object.keys(repeatFrequencies)" v-model="repeatFrequencyForm" />
+            <DatePicker class="edit__time-picker" v-model="durationDateForm" /> 
+            <TimePicker class="edit__time-picker" @loaded="setTimePicker24h" v-model="durationTimeForm" />              
             <StackLayout v-show="repeatFrequencyForm" verticalAlignment="center">
-                <Label class="edit__time-picker-label" text="Введите интервал повторений..." />
+                <Label class="edit__time-picker-label" text="Повторять каждые..." />
             </StackLayout>                      
-            <TextField v-show="repeatFrequencyForm" class="edit__new-note-text" keyboardType="number" v-model="repeatIntervalForm" />
+            <TextField v-show="repeatFrequencyForm" class="edit__new-note-text" keyboardType="number" v-model="repeatIntervalForm" />            
+            <ListPicker class="edit__repeat-picker" :items="Object.keys(repeatFrequencies)" v-model="repeatFrequencyForm" />
+            <StackLayout v-show="repeatFrequencyForm == 2" verticalAlignment="center">
+                <Label class="edit__time-picker-label" text="По каким дням недели повторять событие?" />
+            </StackLayout>                   
+            <button v-show="repeatFrequencyForm == 2" v-for="(item,index) in Object.keys(byDay)" 
+                    :class="{'edit__weekday-button-active' : byDayForm[index] == true}" :key="index+item" @tap="byDayForm[index] = !byDayForm[index]; $forceUpdate();" :text="item"/>         
+            <StackLayout verticalAlignment="center">
+                <Label class="edit__time-picker-label" text="Максимальные дата и время, в которое может начаться событие:" />
+            </StackLayout>                              
+            <DatePicker v-show="repeatFrequencyForm" class="edit__time-picker" v-model="endDateForm" /> 
+            <TimePicker v-show="repeatFrequencyForm" class="edit__time-picker" @loaded="setTimePicker24h" v-model="endTimeForm" />            
             <TextField v-show="repeatFrequencyForm" class="edit__new-note-text" keyboardType="number" v-model="repeatCountForm" hint="(Опционально) Введите количество повторений..." />
           <TextField v-model="event.name" class="edit__new-note-text" hint="имя события..." />
           <TextField v-model="event.details" class="edit__new-note-text" hint="описание события..."/>
@@ -43,6 +53,7 @@ export default {
           return {
             id: null,
             startDate: new Date(),
+            duration: new Date(),
             endDate: new Date(),
             name: "",
             details:"",
@@ -54,22 +65,39 @@ export default {
         }
       },
     },
+    computed: {
+      isByDayButtonActive (index) {
+        return byDayForm[index]
+      }
+    },
     data (){
         return {
             startDateForm: new Date(),
-            endDateForm: new Date(),
             startTimeForm: new Date(),
+            durationDateForm: new Date(),
+            durationTimeForm: new Date(),
+            endDateForm: new Date(),
             endTimeForm: new Date(),
             repeatFrequencies: {
               'Без повторений': null,
-              'Ежедневно': 'DAILY',
-              'Еженедельно': 'WEEKLY',
-              'Ежемесячно': 'MONTHLY',
-              'Ежегодно': 'YEARLY'
+              'День': 'DAILY',
+              'Неделю': 'WEEKLY',
+              'Месяц': 'MONTHLY',
+              'Год': 'YEARLY'
+            },
+            byDay: {
+              'ПН': "MO",
+              'ВТ' : "TU",
+              'СР' : "WE",
+              'ЧТ' : "TH",
+              'ПТ' : 'FR',
+              'СБ' : "SA",
+              'ВС' : "SU"
             },
             repeatFrequencyForm: null,
             repeatIntervalForm: 1,
-            repeatCountForm: ''
+            repeatCountForm: '',
+            byDayForm: new Array(7).fill(false)
         }
     }, 
     methods: {
@@ -81,18 +109,37 @@ export default {
           this.startTimeForm.getHours(),
           this.startTimeForm.getMinutes(),
         )
-        this.event.endDate = new Date(
-          this.endDateForm.getFullYear(),
-          this.endDateForm.getMonth(),
-          this.endDateForm.getDate(),
-          this.endTimeForm.getHours(),
-          this.endTimeForm.getMinutes(),
+        let singleEventEndDate = new Date(
+          this.durationDateForm.getFullYear(),
+          this.durationDateForm.getMonth(),
+          this.durationDateForm.getDate(),
+          this.durationTimeForm.getHours(),
+          this.durationTimeForm.getMinutes(),
         )
+        this.event.duration = singleEventEndDate - this.event.startDate
+        this.event.endDate = null
         if (this.repeatFrequencyForm){
-          this.event.rrule = "FREQ="+this.repeatFrequencies[this.repeatFrequencyForm]+';INTERVAL='+this.repeatIntervalForm
+          this.event.endDate = new Date(
+            this.endDateForm.getFullYear(),
+            this.endDateForm.getMonth(),
+            this.endDateForm.getDate(),
+            this.endTimeForm.getHours(),
+            this.endTimeForm.getMinutes(),
+          )          
+          console.log(Object.keys(this.repeatFrequencies)[this.repeatFrequencyForm])
+          this.event.rrule = "FREQ="+this.repeatFrequencies[Object.keys(this.repeatFrequencies)[this.repeatFrequencyForm]]+';INTERVAL='+this.repeatIntervalForm
+          if (this.repeatFrequencies[Object.keys(this.repeatFrequencies)[this.repeatFrequencyForm]] == 'WEEKLY'){
+            this.event.rrule += ';BYDAY='
+            for (const [key, value] of Object.entries(this.byDayForm)) {
+              if (value){
+                this.event.rrule += this.byDay[Object.keys(this.byDay)[key]] + ','
+              }
+            }            
+            this.event.rrule = this.event.rrule.slice(0, -1) //remove last ','
+          }
           console.log(this.event.rrule)
         }
-        if (+this.event.startDate > +this.event.endDate){
+        if (+this.event.startDate > +singleEventEndDate){
           alert('Событие должно заканчиваться позже, чем началось!')
         } else{
           this.$modal.close(this.event)      
@@ -157,6 +204,10 @@ export default {
 
       &__repeat-picker {
           width: 100%;
+      }
+
+      &__weekday-button-active {
+        background-color: aqua
       }
     }
 </style>

@@ -104,8 +104,8 @@
         let vi = this;
         let notes =  this.fullEvents.filter(function (evt) {
           // adding + is a hack to compare dates, also we dont handle timezones
-          return ((+vi.dateWithoutTime(evt.startDate) <= +vi.dateWithoutTime(vi.selectedDay)) && 
-                  (+vi.dateWithoutTime(evt.endDate) >= +vi.dateWithoutTime(vi.selectedDay)))
+          return ((+vi.dateWithoutTime(evt.startDate) <= +vi.dateWithoutTime(vi.selectedDay) &&
+                   +vi.dateWithoutTime(evt.endDate) >= +vi.dateWithoutTime(vi.selectedDay)))
         })
         notes.sort((a,b) => (a.startDate > b.startDate) ? 1 : ((b.startDate > a.startDate) ? -1 : 0))      
         return notes
@@ -185,20 +185,12 @@
         let vi = this;
         let notes =  this.fullEvents.filter(function (evt) {
           // adding + is a hack to compare dates, also we dont handle timezones
-          return ((+vi.dateWithoutTime(evt.startDate) <= +vi.dateWithoutTime(day)) && 
-                  (+vi.dateWithoutTime(evt.endDate) >= +vi.dateWithoutTime(day)))
+          return ((+vi.dateWithoutTime(evt.startDate) <= +vi.dateWithoutTime(day) &&
+                   +vi.dateWithoutTime(evt.endDate) >= +vi.dateWithoutTime(day)))
         })
         notes.sort((a,b) => (a.startDate > b.startDate) ? 1 : ((b.startDate > a.startDate) ? -1 : 0))      
         return notes
       },      
-      getNotesOfDay(day) {
-        let vi = this;
-        let notes = this.calendarEvents.filter(function (evt) {
-          // adding + is a hack to compare dates, also we dont handle timezones
-          return +vi.dateWithoutTime(evt.startDate) === +vi.dateWithoutTime(day)
-        })
-        return notes
-      },
       changeCalendarMode(bar){
         this.calendarMode = bar.object.selectedIndex
       },
@@ -210,12 +202,12 @@
         this.$showModal(NoteCreateEdit)
           .then (data => {
             let t = data
-            // console.log('!!!!!!!!!')
-            // console.log(data)
-            // for (var property in t) {
-            //   console.log( property + ': ' + t[property]+'; ')
-            // }            
-            this.pushNoteToServer(data.details,data.location,data.name,data.status,data.startDate, data.endDate)
+            console.log('!!!!!!!!!')
+            console.log(data)
+            for (var property in t) {
+              console.log( property + ': ' + t[property]+'; ')
+            }            
+            this.pushNoteToServer(data.details,data.location,data.name,data.status,data.startDate, data.endDate, data.duration, data.rrule)
             // vi.$store.commit('editNoteByIdstr', t) 
         })        
       },
