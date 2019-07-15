@@ -36,7 +36,7 @@
           <ScrollView v-if="calendarMode === 1" orientation="vertical" class="home__week-wrapper"> 
             <StackLayout>     
               <GridLayout backgroundColor="white" columns="*, *, *, *, *, *, *, *" rows="60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60">
-              <Label v-for = "(item, index) in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]" :key="index" :text="item" :row="index" col="0" backgroundColor="#ffd0c7"/>
+              <Label v-for = "(item, index) in ['00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00']" :key="index" :text="item" :row="index" col="0" backgroundColor="#ffd0c7"/>
               <Label v-for= "(item, index) in selectedWeekNotes" class="home__weekview_cell" :key="'event'+index" :col="item.column+1" :row="item.row" :text="item.title" backgroundColor="#dbc7ff" :style="{'margin-top': item.marginTop.toString(), 'margin-bottom': item.marginBottom.toString()}"/>                    
               </GridLayout>
             </StackLayout>
@@ -206,7 +206,7 @@
         // console.log(this.selectedWeekDays)
       },         
       openNewNoteDialog() {
-        this.$showModal(NoteCreateEdit)
+        this.$showModal(NoteCreateEdit, {fullscreen: true})
           .then (data => {
             let t = data
             console.log('!!!!!!!!!')
@@ -224,7 +224,8 @@
         this.$showModal(NoteCreateEdit, {
           props: {
             event: i
-          }
+          },
+          fullscreen: true
         }).then (data => {
             if (data == 'delete'){
               this.deleteEventFromServer(i.id)
