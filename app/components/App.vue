@@ -1,6 +1,9 @@
 <template>
     <Page>
-        <ActionBar title="teenDok">        
+        <ActionBar title="teenDok">    
+          <ActionItem @tap="openShareModal"
+            ios.systemIcon="9" ios.position="left"
+            android.systemIcon="ic_menu_share" android.position="actionBar" />              
         </ActionBar>
         <WrapLayout backgroundColor="white">
           <SegmentedBar class="home__calendar-mode-bar" @selectedIndexChange="changeCalendarMode">
@@ -84,6 +87,7 @@
   import * as frame from "ui/frame";
   import { type } from 'os';
   import NoteCreateEdit from '@/components/NoteCreateEdit'
+  import SharePermissions from '@/components/SharePermissions'
   import ServerCommunicationMixin from '@/components/ServerCommunicationMixin'
 
   var application = require('application');  
@@ -92,6 +96,7 @@
     mixins: [ServerCommunicationMixin],    
     components: {
       NoteCreateEdit,
+      SharePermissions
     },
     computed: {
       calendarEvents (){
@@ -231,6 +236,11 @@
             this.updateNoteOnServer(data.id, data.patternID, data.details,data.location,data.name,data.status,data.startDate, data.endDate, data.duration, data.rrule)          
             // vi.$store.commit('editNote', t) 
         })
+      },
+      openShareModal(){
+        this.$showModal(SharePermissions, {
+          props: {
+          }}).then (data => {})        
       },
       disableCalendarGestures (event){
         // THIS WILL WORK ONLY ON ANDROID, BUT IT IS POSSIBLE TO ADOPT FOR IOS
