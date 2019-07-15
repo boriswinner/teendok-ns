@@ -205,19 +205,28 @@ export default {
        sharePermissions (action, entity_id, entity_type){
          console.log(this.FirebaseUID)
          let tempAxios = this.axiosAuthorized
-         let params = {
-            permissions: {
-               action: ['READ'],
+         let params = [
+            {
+               action: 'READ',
                entity_id: this.FirebaseUID,
                entity_type: 'EVENT'
-            }
-         }
-         tempAxios.post("http://planner.skillmasters.ga/api/v1/share/", params)
+            }]         
+         tempAxios.ge("http://planner.skillmasters.ga/api/v1/share", params)
          .then(result => {
             console.log(result)   
           }).catch(function (error) {
              console.log(error);
            })                     
+       },
+       exportCalendarServer () {
+         let tempAxios = this.axiosAuthorized
+         tempAxios.get("http://planner.skillmasters.ga/api/v1/export/")
+         .then(result => {
+            console.log(Object.keys(result))
+            console.log(result.data)   
+          }).catch(function (error) {
+             console.log(error);
+         }) 
        }
    }
 }

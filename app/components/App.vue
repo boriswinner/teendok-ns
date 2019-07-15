@@ -2,8 +2,10 @@
     <Page>
         <ActionBar title="teenDok">    
           <ActionItem @tap="openShareModal"
-            ios.systemIcon="9" ios.position="left"
             android.systemIcon="ic_menu_share" android.position="actionBar" />              
+            <ActionItem @tap="exportCalendar"
+              android.systemIcon="ic_menu_save"
+              text="export" android.position="actionBar" />            
         </ActionBar>
         <WrapLayout backgroundColor="white">
           <SegmentedBar class="home__calendar-mode-bar" @selectedIndexChange="changeCalendarMode">
@@ -242,6 +244,9 @@
           props: {
           }}).then (data => {})        
       },
+      exportCalendar () {
+        this.exportCalendarServer()
+      },      
       disableCalendarGestures (event){
         // THIS WILL WORK ONLY ON ANDROID, BUT IT IS POSSIBLE TO ADOPT FOR IOS
         let calendar = event.object
