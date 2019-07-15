@@ -13,7 +13,10 @@ export default {
    computed: {
       firebaseToken () {
          return this.$store.getters.getFirebaseToken
-       },      
+      },
+      FirebaseUID () {
+         return this.$store.getters.getFirebaseUID
+      }      
    },
    created() {
       let vi = this
@@ -198,6 +201,23 @@ export default {
          }).catch(function (error) {
             console.log(error);
           })            
-       }   
+       },   
+       sharePermissions (action, entity_id, entity_type){
+         console.log(this.FirebaseUID)
+         let tempAxios = this.axiosAuthorized
+         let params = {
+            permissions: {
+               action: ['READ'],
+               entity_id: this.FirebaseUID,
+               entity_type: 'EVENT'
+            }
+         }
+         tempAxios.post("http://planner.skillmasters.ga/api/v1/share/", params)
+         .then(result => {
+            console.log(result)   
+          }).catch(function (error) {
+             console.log(error);
+           })                     
+       }
    }
 }

@@ -22,11 +22,15 @@ export default new Vuex.Store({
   state: {
     notes: [],
     firebaseToken: null,
+    firebaseUID: null
   },
   mutations: {
     setFirebaseToken (state, token) {
       state.firebaseToken = token
     },
+    setFirebaseUID (state, uid) {
+      state.firebaseUID = uid
+    },    
     clearNotes (state) {
       state.notes = []
     },
@@ -55,6 +59,9 @@ export default new Vuex.Store({
     },    
     getFirebaseToken: state => {
       return state.firebaseToken;
+    },
+    getFirebaseUID: state => {
+      return state.firebaseUID
     }
     // getNotesByDate: state => date => {
     //   return state.notes[date]

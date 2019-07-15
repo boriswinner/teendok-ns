@@ -72,8 +72,8 @@ export default {
     return {
       isLoggingIn: true,
       user: {
-        email: 'boriswinner88@gmail.com',
-        password: 'Hahahaha1',
+        email: '',
+        password: '',
         confirmPassword: null
       }
     };
@@ -97,21 +97,23 @@ export default {
     login() {
       userService
         .login(this.user)
-        .then(() => {
-      let vi = this
-      firebase.getAuthToken({
-        // default false, not recommended to set to true by Firebase but exposed for {N} devs nonetheless :)
-        forceRefresh: false
-      }).then(
-          function (result) {
-            vi.$store.commit('setFirebaseToken', result.token)   
-            loader.hide();
-            vi.$navigateTo(App);        
-          },
-          function (errorMessage) {
-            console.log("Auth result retrieval error: " + errorMessage);
-          }
-      );      		    
+        .then((userObject) => {
+          console.log(userObject)
+          let vi = this
+          vi.$store.commit('setFirebaseUID', userObject.uid)   
+          firebase.getAuthToken({
+            // default false, not recommended to set to true by Firebase but exposed for {N} devs nonetheless :)
+            forceRefresh: false
+          }).then(
+              function (result) {
+                vi.$store.commit('setFirebaseToken', result.token)   
+                loader.hide();
+                vi.$navigateTo(App);        
+              },
+              function (errorMessage) {
+                console.log("Auth result retrieval error: " + errorMessage);
+              }
+          );      		    
         })
         .catch(err => {
           console.error(err);
