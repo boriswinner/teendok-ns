@@ -13,11 +13,11 @@
             </StackLayout>          
             <DatePicker class="edit__time-picker" v-model="durationDateForm" /> 
             <TimePicker class="edit__time-picker" @loaded="setTimePicker24h" v-model="durationTimeForm" />              
-            <StackLayout v-show="repeatFrequencyForm" verticalAlignment="center">
-                <Label textWrap="true" class="edit__time-picker-label" text="Повторять каждые..." />
+            <StackLayout verticalAlignment="center">
+                <Label textWrap="true" class="edit__time-picker-label" :text="repeatFrequencyForm ? 'Повторять каждые...' : ''" />
             </StackLayout>                      
-            <TextField v-show="repeatFrequencyForm" class="edit__new-note-text" keyboardType="number" v-model="repeatIntervalForm" />            
-            <ListPicker class="edit__repeat-picker" :items="Object.keys(repeatFrequencies)" v-model="repeatFrequencyForm" />
+            <ListPicker class="edit__repeat-picker" :items="Object.keys(repeatFrequencies)" v-model="repeatFrequencyForm" />            
+            <TextField v-show="repeatFrequencyForm" class="edit__repeat-input" keyboardType="number" v-model="repeatIntervalForm" />            
             <StackLayout v-show="repeatFrequencyForm == 2" verticalAlignment="center">
                 <Label textWrap="true" class="edit__time-picker-label" text="По каким дням недели повторять событие?" />
             </StackLayout>                   
@@ -228,8 +228,12 @@ export default {
           color: white;
       }
 
+      &__repeat-input {
+        width: 30%;
+      }
+
       &__repeat-picker {
-          width: 100%;
+          width: 70%;
       }
 
       &__weekday-button-active {
