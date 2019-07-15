@@ -1,5 +1,6 @@
 import axios from "axios";
 var qs = require('qs');
+const fileSystemModule = require("tns-core-modules/file-system");
 
 export default {
    data () {
@@ -211,7 +212,7 @@ export default {
                entity_id: this.FirebaseUID,
                entity_type: 'EVENT'
             }]         
-         tempAxios.ge("http://planner.skillmasters.ga/api/v1/share", params)
+         tempAxios.post("http://planner.skillmasters.ga/api/v1/share", params)
          .then(result => {
             console.log(result)   
           }).catch(function (error) {
@@ -223,7 +224,14 @@ export default {
          tempAxios.get("http://planner.skillmasters.ga/api/v1/export/")
          .then(result => {
             console.log(Object.keys(result))
-            console.log(result.data)   
+            console.log(result.data) 
+            // const folder = fileSystemModule.knownFolders.documents().path;
+            // const fileName = "picture.png";
+            // const path = fileSystemModule.path.join(folder,fileName);
+            // const picsaved = imageSource.saveToFile(path, "ics");
+            // if (picsaved){
+            //    console.log('saved')
+            // }              
           }).catch(function (error) {
              console.log(error);
          }) 

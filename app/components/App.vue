@@ -21,7 +21,8 @@
             :eventSource="calendarEvents"
             eventsViewMode="None" 
             selectionMode="Single" 
-            viewMode="Month"              
+            viewMode="Month"    
+            :monthViewStyle='monthViewStyle'                       
           ></RadCalendar>  
           <RadCalendar 
             v-show="calendarMode === 1"
@@ -51,7 +52,7 @@
             eventsViewMode="Inline" 
             selectionMode="Single" 
             viewMode="Day"      
-            :dayViewStyle='dayViewStyle'        
+            :dayViewStyle='dayViewStyle'       
           ></RadCalendar>                              
           <ScrollView v-show="calendarMode === 0" class="home__notes-list-wrapper">
             <ListView for="event in selectedDayFullEvents" class="home__notes-list" @itemTap="tapNote">
@@ -91,6 +92,7 @@
   import NoteCreateEdit from '@/components/NoteCreateEdit'
   import SharePermissions from '@/components/SharePermissions'
   import ServerCommunicationMixin from '@/components/ServerCommunicationMixin'
+  import { Color } from "tns-core-modules/color";
 
   var application = require('application');  
 
@@ -144,6 +146,15 @@
         let dayEventsViewStyle = new calendarModule.DayEventsViewStyle();
         dayEventsViewStyle.timeLabelFormat = 'HH:mm';
         t.dayEventsViewStyle = dayEventsViewStyle;
+        return t
+      },
+      monthViewStyle(){
+        let t = new calendarModule.CalendarMonthViewStyle()
+        let dayCellStyle = new calendarModule.DayCellStyle()
+        dayCellStyle.showEventsText = false
+        dayCellStyle.eventTextColor = new Color("#745151");
+        dayCellStyle.cellTextColor = new Color("#745151");
+        t.dayCellStyle  = dayCellStyle
         return t
       }   
     },
