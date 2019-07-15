@@ -1,6 +1,7 @@
 import axios from "axios";
 var qs = require('qs');
-const fileSystemModule = require("tns-core-modules/file-system");
+const fs = require("tns-core-modules/file-system");
+import { ShareFile } from 'nativescript-share-file';
 
 export default {
    data () {
@@ -222,16 +223,29 @@ export default {
        exportCalendarServer () {
          let tempAxios = this.axiosAuthorized
          tempAxios.get("http://planner.skillmasters.ga/api/v1/export/")
-         .then(result => {
-            console.log(Object.keys(result))
-            console.log(result.data) 
-            // const folder = fileSystemModule.knownFolders.documents().path;
-            // const fileName = "picture.png";
-            // const path = fileSystemModule.path.join(folder,fileName);
-            // const picsaved = imageSource.saveToFile(path, "ics");
-            // if (picsaved){
-            //    console.log('saved')
-            // }              
+         .then(exportedCalendarString => {
+            const documents = fs.knownFolders.documents();
+            const folder = documents.getFolder("calendarExport");
+            const file = folder.getFile("export.ics");
+            file.writeText(exportedCalendarString.data.toString())
+                .then((result) => {
+                   console.log('file saved')
+                   let shareFile = new ShareFile();   
+                   shareFile.open( { 
+                     path: file._path, 
+                     intentTitle: 'Отправить экспортированный календарь:', // optional Android
+                     rect: { // optional iPad
+                         x: 110,
+                         y: 110,
+                         width: 0,
+                         height: 0
+                     },
+                     options: true, // optional iOS
+                     animated: true // optional iOS
+                 });                                   
+                }).catch((err) => {
+                    console.log(err);
+                });
           }).catch(function (error) {
              console.log(error);
          }) 
