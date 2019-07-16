@@ -207,6 +207,20 @@ export default {
             vi.getNotesFromServer()
           })            
        },  
+       getPermissions (isMine){
+        let vi = this
+        let tempAxios = this.axiosAuthorized
+        return tempAxios.get(vi.APIurl+"permissions/",{
+          params: {
+            entity_type: 'EVENT',
+            mine: isMine
+          }
+        }).then(res =>{
+          return res.data.data                
+        }).catch(error => {
+          console.log(error)
+        })         
+       },
        activatePermissions (link) {
          let vi = this
          let tempAxios = this.axiosAuthorized
@@ -240,6 +254,20 @@ export default {
           }).catch(function (error) {
              console.log(error);
            })                     
+       },
+       revokePermission (id){
+        let vi = this
+        let tempAxios = this.axiosAuthorized
+        tempAxios.delete(vi.APIurl+"permissions/"+id)
+        .then(result => {
+          console.log(result)
+          var toast = Toast.makeText("Разрешение удалено!");
+          toast.show();                    
+        }).catch(error => {
+          var toast = Toast.makeText("Не удалось удалить разрешение...");
+          toast.show();          
+          console.log(error)
+        })
        },
        exportCalendarServer () {
          let tempAxios = this.axiosAuthorized

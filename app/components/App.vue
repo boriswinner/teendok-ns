@@ -11,7 +11,10 @@
               text="import" android.position="actionBar" />                
             <ActionItem @tap="activatePermissionsFromLink"
               android.systemIcon="ic_partial_secure"
-              text="import" android.position="actionBar" />                              
+              text="import" android.position="actionBar" />  
+            <ActionItem @tap="openPermissionsManage"
+              android.systemIcon="ic_menu_preferences"
+              text="import" android.position="actionBar" />                                            
         </ActionBar>
         <WrapLayout backgroundColor="white">
           <SegmentedBar class="home__calendar-mode-bar" @selectedIndexChange="changeCalendarMode">
@@ -102,6 +105,7 @@
   import { Color } from "tns-core-modules/color";
   import { error } from 'util';
   import HelpersMixin from './HelpersMixin';
+  import ManagePermissions from './ManagePermissions.vue';
 
   var application = require('application');  
 
@@ -110,7 +114,8 @@
     components: {
       NoteCreateEdit,
       SharePermissions,
-      ActivatePermissions
+      ActivatePermissions,
+      ManagePermissions
     },
     computed: {
       calendarEvents (){
@@ -269,7 +274,13 @@
       },
       exportCalendar () {
         this.exportCalendarServer()
-      },      
+      },     
+      openPermissionsManage() {
+        this.$navigateTo(ManagePermissions, {
+          props: {
+          },
+          }).then (data => {})         
+      } 
     },
     created() {
       this.selectedDay = new Date();
