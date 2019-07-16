@@ -4,6 +4,7 @@ const fs = require("tns-core-modules/file-system");
 import { ShareFile } from 'nativescript-share-file';
 import { Mediafilepicker, FilePickerOptions } from 'nativescript-mediafilepicker';
 import { isIOS, isAndroid } from "platform";
+import * as Toast from 'nativescript-toast';
 
 export default {
    data () {
@@ -216,6 +217,8 @@ export default {
          tempAxios.get(link)
          .then(result => {
            console.log(result)
+           var toast = Toast.makeText("Права получены!");
+           toast.show();           
          }).catch(function (error) {
           console.log(error);
         })  

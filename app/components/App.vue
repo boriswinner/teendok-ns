@@ -7,10 +7,10 @@
               android.systemIcon="ic_menu_save"
               text="export" android.position="actionBar" />            
             <ActionItem @tap="importCalendarFromFS"
-              android.systemIcon="ic_menu_add"
+              android.systemIcon="ic_menu_upload"
               text="import" android.position="actionBar" />                
             <ActionItem @tap="activatePermissionsFromLink"
-              android.systemIcon="ic_menu_manage"
+              android.systemIcon="ic_partial_secure"
               text="import" android.position="actionBar" />                              
         </ActionBar>
         <WrapLayout backgroundColor="white">
@@ -222,12 +222,13 @@
       },
       onDateSelected(args) {
         this.selectedDay = args.date
-        // console.log(this.selectedWeekDays)
       },         
       openNewNoteDialog() {
+        let selectedDayWithCurrentTime = new Date(this.selectedDay.getTime())
+        selectedDayWithCurrentTime.setHours(new Date().getHours(), new Date().getMinutes())
         this.$showModal(NoteCreateEdit, {
           props: {
-            selectedDay: this.selectedDay
+            selectedDay: selectedDayWithCurrentTime
           },
           fullscreen: true
         }).then (data => {

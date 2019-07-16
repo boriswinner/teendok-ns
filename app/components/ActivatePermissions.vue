@@ -2,7 +2,7 @@
     <Page>
       <ScrollView>
         <WrapLayout backgroundColor="white">
-            <label text="В этом меню вы можете активировать полученную ссылку доступа:"/>
+            <label textWrap="true" text="В этом меню вы можете активировать полученную ссылку доступа:"/>
             <button class="permission__button permission__button-share" @tap="activatePermissionsButtonTap" text="Вставить ссылку и получить права"/>
         </WrapLayout>
         </ScrollView>
