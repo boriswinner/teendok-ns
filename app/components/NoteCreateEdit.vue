@@ -42,9 +42,10 @@
 import { isIOS, isAndroid } from "platform";
 var application = require('application');  
 import ServerCommunicationMixin from '@/components/ServerCommunicationMixin'
+import HelpersMixin from './HelpersMixin';
 
 export default {
-    mixins: [ServerCommunicationMixin],     
+    mixins: [ServerCommunicationMixin, HelpersMixin],     
     name: 'NoteCreateEdit',
     props: {
       event: {
@@ -104,10 +105,7 @@ export default {
             byDayForm: new Array(7).fill(false)
         }
     }, 
-    methods: {
-      getKeyByValue(object, value) {
-        return Object.keys(object).find(key => object[key] === value);
-      },      
+    methods: {  
       closeNote () { 
         this.event.startDate = new Date(
           this.startDateForm.getFullYear(),
@@ -154,12 +152,7 @@ export default {
       },
       deleteNote () {
         this.$modal.close('delete')      
-      },
-      setTimePicker24h (event){
-        // THIS WILL WORK ONLY ON ANDROID, BUT IT IS POSSIBLE TO ADOPT FOR IOS
-        let picker = event.object.nativeView
-        picker.setIs24HourView(java.lang.Boolean.TRUE)
-      }      
+      },  
     },
     mounted () {
       if (isAndroid) {

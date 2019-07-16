@@ -100,12 +100,13 @@
   import ActivatePermissions from '@/components/ActivatePermissions'
   import ServerCommunicationMixin from '@/components/ServerCommunicationMixin'
   import { Color } from "tns-core-modules/color";
-import { error } from 'util';
+  import { error } from 'util';
+  import HelpersMixin from './HelpersMixin';
 
   var application = require('application');  
 
   export default {
-    mixins: [ServerCommunicationMixin],    
+    mixins: [ServerCommunicationMixin, HelpersMixin],    
     components: {
       NoteCreateEdit,
       SharePermissions,
@@ -178,19 +179,6 @@ import { error } from 'util';
       }
     },
     methods: {
-      dismissSoftKeyboard(){
-        if (isIOS) {
-            frame.topmost().nativeView.endEditing(true);
-        }
-        if (isAndroid) {
-          utils.ad.dismissSoftInput();
-        }    
-      },  
-      dateWithoutTime (date){
-        var d = new Date(date);
-        d.setHours(0, 0, 0, 0);
-        return d;        
-      },
       sameWeekDates(current) {
         var week= new Array(); 
         let t = new Date(current);
@@ -282,21 +270,6 @@ import { error } from 'util';
       exportCalendar () {
         this.exportCalendarServer()
       },      
-      disableCalendarGestures (event){
-        // THIS WILL WORK ONLY ON ANDROID, BUT IT IS POSSIBLE TO ADOPT FOR IOS
-        let calendar = event.object
-        let telCalendar = calendar.nativeView
-        let gestureManager = telCalendar.getGestureManager()
-        gestureManager.setSwipeUpToChangeDisplayMode(false)
-        gestureManager.setPinchCloseToChangeDisplayMode(false)
-        gestureManager.setSwipeDownToChangeDisplayMode(false)
-        gestureManager.setDoubleTapToChangeDisplayMode(false)
-      },
-      setTimePicker24h (event){
-        // THIS WILL WORK ONLY ON ANDROID, BUT IT IS POSSIBLE TO ADOPT FOR IOS
-        let picker = event.object.nativeView
-        picker.setIs24HourView(java.lang.Boolean.TRUE)
-      },
     },
     created() {
       this.selectedDay = new Date();

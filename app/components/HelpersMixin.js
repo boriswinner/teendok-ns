@@ -1,6 +1,15 @@
 const utilsModule = require("tns-core-modules/utils/utils");
 var clipboard = require("nativescript-clipboard");
 import * as Toast from 'nativescript-toast';
+import * as calendarModule from 'nativescript-ui-calendar';
+import * as frameModule from "tns-core-modules/ui/frame";
+import * as observableModule from "tns-core-modules/data/observable";
+import * as utils from "utils/utils";
+import { isIOS, isAndroid } from "platform";
+import * as frame from "ui/frame";
+import { type } from 'os';
+import { Color } from "tns-core-modules/color";
+import { error } from 'util';
 
 export default {
     data () {
@@ -28,6 +37,37 @@ export default {
         },
         openLink (url) {
             utilsModule.openUrl(url)
-        },            
+        }, 
+        dismissSoftKeyboard(){
+            if (isIOS) {
+                frame.topmost().nativeView.endEditing(true);
+            }
+            if (isAndroid) {
+                utils.ad.dismissSoftInput();
+            }    
+        },  
+        dateWithoutTime (date){
+            var d = new Date(date);
+            d.setHours(0, 0, 0, 0);
+            return d;        
+        },                   
+        disableCalendarGestures (event){
+            // THIS WILL WORK ONLY ON ANDROID, BUT IT IS POSSIBLE TO ADOPT FOR IOS
+            let calendar = event.object
+            let telCalendar = calendar.nativeView
+            let gestureManager = telCalendar.getGestureManager()
+            gestureManager.setSwipeUpToChangeDisplayMode(false)
+            gestureManager.setPinchCloseToChangeDisplayMode(false)
+            gestureManager.setSwipeDownToChangeDisplayMode(false)
+            gestureManager.setDoubleTapToChangeDisplayMode(false)
+        },
+        setTimePicker24h (event){
+            // THIS WILL WORK ONLY ON ANDROID, BUT IT IS POSSIBLE TO ADOPT FOR IOS
+            let picker = event.object.nativeView
+            picker.setIs24HourView(java.lang.Boolean.TRUE)
+        },    
+        getKeyByValue(object, value) {
+            return Object.keys(object).find(key => object[key] === value);
+          },                  
     }
 }
