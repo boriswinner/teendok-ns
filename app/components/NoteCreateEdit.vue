@@ -5,8 +5,8 @@
             <StackLayout verticalAlignment="center">
                 <Label textWrap="true" class="edit__time-picker-label" text="Начало события (если событие повторяется, минимальные дата и время, в которое может начаться событие):" />
             </StackLayout>          
-            <DatePicker class="edit__date-picker" v-model="startDateForm" />
-            <TimePicker class="edit__time-picker" @loaded="setTimePicker24h" v-model="startTimeForm" />
+            <DatePicker class="edit__date-picker" v-model="patternStartDateForm" />
+            <TimePicker class="edit__time-picker" @loaded="setTimePicker24h" v-model="patternStartTimeForm" />
 
             <StackLayout verticalAlignment="center">
                 <Label textWrap="true" class="edit__time-picker-label" text="Конец события: (если событие повторяется, остальные экземпляры создаются аналогичным образом с такой же длительностью):" />
@@ -26,8 +26,8 @@
             <StackLayout v-show="repeatFrequencyForm" verticalAlignment="center">
                 <Label textWrap="true" class="edit__time-picker-label" text="Максимальные дата и время, в которое может начаться событие:" />
             </StackLayout>                              
-            <DatePicker v-show="repeatFrequencyForm" class="edit__time-picker" v-model="endDateForm" /> 
-            <TimePicker v-show="repeatFrequencyForm" class="edit__time-picker" @loaded="setTimePicker24h" v-model="endTimeForm" />            
+            <DatePicker v-show="repeatFrequencyForm" class="edit__time-picker" v-model="patternEndDateForm" /> 
+            <TimePicker v-show="repeatFrequencyForm" class="edit__time-picker" @loaded="setTimePicker24h" v-model="patternEndTimeForm" />            
             <!-- <TextField v-show="repeatFrequencyForm" class="edit__new-note-text" keyboardType="number" v-model="repeatCountForm" hint="(Опционально) Введите количество повторений..." /> -->
           <TextField v-model="event.name" class="edit__new-note-text" hint="имя события..." />
           <TextField v-model="event.details" class="edit__new-note-text" hint="описание события..."/>
@@ -43,6 +43,7 @@ import { isIOS, isAndroid } from "platform";
 var application = require('application');  
 import ServerCommunicationMixin from '@/components/ServerCommunicationMixin'
 import HelpersMixin from './HelpersMixin';
+import { duration } from 'nativescript-toast';
 
 export default {
     mixins: [ServerCommunicationMixin, HelpersMixin],     
@@ -54,8 +55,9 @@ export default {
           return {
             id: null,
             startDate: new Date(),
-            duration: new Date(),
+            duration: 0,
             endDate: new Date(),
+            patternStartDate: new Date(),
             patternEndDate: new Date(),
             name: "",
             details:"",
@@ -77,12 +79,12 @@ export default {
     },
     data (){
         return {
-            startDateForm: new Date(),
-            startTimeForm: new Date(),
+            patternStartDateForm: new Date(),
+            patternStartTimeForm: new Date(),
             durationDateForm: new Date(),
             durationTimeForm: new Date(),
-            endDateForm: new Date(),
-            endTimeForm: new Date(),
+            patternEndDateForm: new Date(),
+            patternEndTimeForm: new Date(),
             repeatFrequencies: {
               'Без повторений': null,
               'День': 'DAILY',
@@ -108,11 +110,11 @@ export default {
     methods: {  
       closeNote () { 
         this.event.startDate = new Date(
-          this.startDateForm.getFullYear(),
-          this.startDateForm.getMonth(),
-          this.startDateForm.getDate(),
-          this.startTimeForm.getHours(),
-          this.startTimeForm.getMinutes(),
+          this.patternStartDateForm.getFullYear(),
+          this.patternStartDateForm.getMonth(),
+          this.patternStartDateForm.getDate(),
+          this.patternStartTimeForm.getHours(),
+          this.patternStartTimeForm.getMinutes(),
         )
         let singleEventEndDate = new Date(
           this.durationDateForm.getFullYear(),
@@ -125,11 +127,11 @@ export default {
         this.event.endDate = null
         if (this.repeatFrequencyForm){
           this.event.endDate = new Date(
-            this.endDateForm.getFullYear(),
-            this.endDateForm.getMonth(),
-            this.endDateForm.getDate(),
-            this.endTimeForm.getHours(),
-            this.endTimeForm.getMinutes(),
+            this.patternEndDateForm.getFullYear(),
+            this.patternEndDateForm.getMonth(),
+            this.patternEndDateForm.getDate(),
+            this.patternEndTimeForm.getHours(),
+            this.patternEndTimeForm.getMinutes(),
           )          
           console.log(Object.keys(this.repeatFrequencies)[this.repeatFrequencyForm])
           this.event.rrule = "FREQ="+this.repeatFrequencies[Object.keys(this.repeatFrequencies)[this.repeatFrequencyForm]]+';INTERVAL='+this.repeatIntervalForm
@@ -145,6 +147,8 @@ export default {
           console.log(this.event.rrule)
         }
         if (+this.event.startDate > +singleEventEndDate){
+          alert(this.event.startDate)
+          alert(singleEventEndDate)
           alert('Событие должно заканчиваться позже, чем началось!')
         } else{
           this.$modal.close(this.event)      
@@ -162,15 +166,16 @@ export default {
         console.log( property + ': ' + this.event[property]+'; ')
       }       
       if (this.selectedDay){
-        this.event.startDate = this.selectedDay
+        this.event.patternStartDate = this.selectedDay
         this.event.endDate = this.selectedDay
+        this.event.patternEndDate = this.selectedDay
       }
-      this.startDateForm = this.event.startDate
-      this.startTimeForm = this.event.startDate
-      this.durationDateForm = this.event.endDate
-      this.durationTimeForm = this.event.endDate 
-      this.endDateForm = this.event.patternEndDate
-      this.endTimeForm = this.event.patternEndDate
+      this.patternStartDateForm = this.event.patternStartDate
+      this.patternStartTimeForm = this.event.patternStartDate
+      this.durationDateForm = new Date(this.event.patternStartDate.getTime() + this.event.duration)
+      this.durationTimeForm = new Date(this.event.patternStartDate.getTime() + this.event.duration)
+      this.patternEndDateForm = this.event.patternEndDate
+      this.patternEndTimeForm = this.event.patternEndDate
       if (this.event.rrule){
         let freqSTr = this.event.rrule.match(/FREQ=[A-z]+/i)
         if (freqSTr){

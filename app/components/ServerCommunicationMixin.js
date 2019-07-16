@@ -84,6 +84,8 @@ export default {
                      patternID: vi.serverPatterns[i.event_id].id,
                      startDate: new Date(i.started_at),
                      endDate: new Date(i.ended_at),
+                     duration: i.ended_at-i.started_at,
+                     patternStartDate: new Date(vi.serverPatterns[i.event_id].started_at),
                      patternEndDate: new Date(vi.serverPatterns[i.event_id].ended_at),
                      name: vi.serverEvents[i.event_id].name,
                      details: vi.serverEvents[i.event_id].details,
