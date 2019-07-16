@@ -217,6 +217,7 @@ export default {
          tempAxios.get(link)
          .then(result => {
            console.log(result)
+           this.getNotesFromServer()           
            var toast = Toast.makeText("Права получены!");
            toast.show();           
          }).catch(function (error) {
