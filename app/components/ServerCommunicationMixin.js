@@ -209,7 +209,17 @@ export default {
          }).catch(function (error) {
             console.log(error);
           })            
-       },   
+       },  
+       activatePermissions (link) {
+         let vi = this
+         let tempAxios = this.axiosAuthorized
+         tempAxios.get(link)
+         .then(result => {
+           console.log(result)
+         }).catch(function (error) {
+          console.log(error);
+        })  
+       },
        sharePermissions (actions){
          let vi = this
          let tempAxios = this.axiosAuthorized

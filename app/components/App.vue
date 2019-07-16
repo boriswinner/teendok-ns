@@ -9,6 +9,9 @@
             <ActionItem @tap="importCalendarFromFS"
               android.systemIcon="ic_menu_add"
               text="import" android.position="actionBar" />                
+            <ActionItem @tap="activatePermissionsFromLink"
+              android.systemIcon="ic_menu_manage"
+              text="import" android.position="actionBar" />                              
         </ActionBar>
         <WrapLayout backgroundColor="white">
           <SegmentedBar class="home__calendar-mode-bar" @selectedIndexChange="changeCalendarMode">
@@ -94,6 +97,7 @@
   import { type } from 'os';
   import NoteCreateEdit from '@/components/NoteCreateEdit'
   import SharePermissions from '@/components/SharePermissions'
+  import ActivatePermissions from '@/components/ActivatePermissions'
   import ServerCommunicationMixin from '@/components/ServerCommunicationMixin'
   import { Color } from "tns-core-modules/color";
 
@@ -103,7 +107,8 @@
     mixins: [ServerCommunicationMixin],    
     components: {
       NoteCreateEdit,
-      SharePermissions
+      SharePermissions,
+      ActivatePermissions
     },
     computed: {
       calendarEvents (){
@@ -262,6 +267,11 @@
         this.$showModal(SharePermissions, {
           props: {
           }}).then (data => {})        
+      },
+      activatePermissionsFromLink() {
+        this.$showModal(ActivatePermissions, {
+          props: {
+          }}).then (data => {})                
       },
       exportCalendar () {
         this.exportCalendarServer()

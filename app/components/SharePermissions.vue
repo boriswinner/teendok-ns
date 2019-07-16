@@ -17,12 +17,11 @@
 import { isIOS, isAndroid } from "platform";
 var application = require('application');  
 import ServerCommunicationMixin from '@/components/ServerCommunicationMixin'
-const utilsModule = require("tns-core-modules/utils/utils");
-var clipboard = require("nativescript-clipboard");
+import HelpersMixin from '@/components/HelpersMixin'
 import * as Toast from 'nativescript-toast';
 
 export default {
-    mixins: [ServerCommunicationMixin],     
+    mixins: [ServerCommunicationMixin, HelpersMixin],     
     name: 'SharePermissions',
     props: {
     },
@@ -51,18 +50,8 @@ export default {
             });
             this.sharePermissions(permissions).then (data => {
                 this.permissionsShareUrl = data
-            })
-            
+            })         
         },
-        openLink (url) {
-            utilsModule.openUrl(url)
-        },    
-        copyToClipboard(text){
-            clipboard.setText(text).then(function() {
-                var toast = Toast.makeText("Скопировано!");
-                toast.show();
-            })            
-        }
     },
     mounted () {
       if (isAndroid) {
