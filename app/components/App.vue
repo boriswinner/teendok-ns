@@ -258,7 +258,6 @@ import { error } from 'util';
         }).then (data => {
             if (data == 'delete'){
               this.deleteEventFromServer(i.id)
-              this.getNotesFromServer()
             }                        
             if (!('eventName' in data)){
               console.log('!!!!!!!!!')

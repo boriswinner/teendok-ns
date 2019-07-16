@@ -5,8 +5,10 @@ import { ShareFile } from 'nativescript-share-file';
 import { Mediafilepicker, FilePickerOptions } from 'nativescript-mediafilepicker';
 import { isIOS, isAndroid } from "platform";
 import * as Toast from 'nativescript-toast';
+import HelpersMixin from './HelpersMixin';
 
 export default {
+   mixins: [HelpersMixin],      
    data () {
       return {
          serverEvents: [],
@@ -45,56 +47,38 @@ export default {
          this.$store.commit('clearNotes') 
          let tempAxios = this.axiosAuthorized
    
-         tempAxios.get("http://planner.skillmasters.ga/api/v1/events", {headers: {
-           "X-Firebase-Auth": vi.firebaseToken
-         }}).then(result => {
+         tempAxios.get(vi.APIurl+"events").then(result => {
            console.log(result.data)
-           if (!result.data.success) return
            vi.serverEvents = result.data.data
            vi.serverEvents = vi.serverEvents.reduce(function(map, obj) {
                map[obj.id] = obj;
                return map;
            }, {});        
-           // console.log(this.serverEvents)
            let event_ids = result.data.data.map(a => parseInt(a.id))   
-           // console.log(event_ids)
-           return tempAxios.get("http://planner.skillmasters.ga/api/v1/events/instances", {
-             headers: {
-               "X-Firebase-Auth": vi.firebaseToken
-             },
+           return tempAxios.get(vi.APIurl+"events/instances", {
              params: {
                "id": event_ids,
              },              
            }).then(result => {
-             console.log(result.data)
-               if (!result.data.success) return
+               console.log(result.data)
                vi.serverInstances = result.data.data
-               return tempAxios.get("http://planner.skillmasters.ga/api/v1/patterns", {
-                 headers: {
-                   "X-Firebase-Auth": vi.firebaseToken
-                 },
+               return tempAxios.get(vi.APIurl+"patterns", {
                  params: {
                    "events": event_ids,
                  },                       
                }).then(result => {
                  console.log(result.data)
-                 if (!result.data.success) return
                  vi.serverPatterns = result.data.data  
                  vi.serverPatterns = vi.serverPatterns.reduce(function(map, obj) {
                      map[obj.event_id] = obj;
                      return map;
                  }, {});
-                 console.log('PATTETNS')
-                 console.log(vi.serverPatterns)                              
                }).catch(function (error) {
-               console.log(error);
+                 console.log(error);
                }).finally(function () {
                  console.log('------')
                  console.log(vi.serverInstances.length)
                  vi.serverInstances.forEach(function (i, index) {
-                   // console.log(i)
-                   // console.log(i.event_id)
-                   // console.log(vi.serverEvents)
                    let t = {
                      id: i.event_id,
                      patternID: vi.serverPatterns[i.event_id].id,
@@ -124,7 +108,7 @@ export default {
          let tempAxios = this.axiosAuthorized   
          console.log(started_at)  
          console.log(ended_at)  
-         tempAxios.patch("http://planner.skillmasters.ga/api/v1/events/"+eventID, {
+         tempAxios.patch(vi.APIurl+"events/"+eventID, {
              details: details,
              location: location,
              name: name,
@@ -132,7 +116,6 @@ export default {
          }).then(result => {
            console.log('post event')
            console.log(result.data)
-           let eventID = result.data.data[0].id
            console.log('updatePattern')            
            let params = {
             started_at: started_at.getTime(),
@@ -149,24 +132,26 @@ export default {
              console.log(result.data)
              var toast = Toast.makeText("Событие обновлено!");
              toast.show();             
-             this.getNotesFromServer()
-           }).catch(function (error) {
-             var toast = Toast.makeText("Не удалось обновить событие");
-             toast.show();                          
+             vi.getNotesFromServer()
+           }).catch(function (error) {                      
              console.log('post event error')
              console.log(error);
+             var toast = Toast.makeText("Не удалось обновить событие");
+             toast.show();                 
+             vi.getNotesFromServer()
            })  
-         }).catch(function (error) {
-           var toast = Toast.makeText("Не удалось обновить событие");
-           toast.show();                        
+         }).catch(function (error) {                      
            console.log('post event error')
            console.log(error);
+           var toast = Toast.makeText("Не удалось обновить событие");
+           toast.show();             
+           vi.getNotesFromServer()
          })             
       },
       pushNoteToServer(details, location, name, status, started_at, ended_at, duration, rrule) {
          let vi = this
          let tempAxios = this.axiosAuthorized     
-         tempAxios.post("http://planner.skillmasters.ga/api/v1/events", {
+         tempAxios.post(vi.APIurl+"events", {
              details: details,
              location: location,
              name: name,
@@ -175,11 +160,6 @@ export default {
            console.log('post event')
            console.log(result.data)
            let eventID = result.data.data[0].id
-           console.log(eventID)
-           console.log('pushPattern')            
-           console.log(started_at)
-           console.log(ended_at)  
-           console.log(started_at.getTime())
            let params = {
             started_at: started_at.getTime(),
             duration: duration,
@@ -191,40 +171,38 @@ export default {
            }
            tempAxios.post("http://planner.skillmasters.ga/api/v1/patterns/?event_id="+eventID, params)
            .then(result => {
-             var toast = Toast.makeText("Событие создано!");
-             toast.show();             
              console.log('POST PATTERN SUCCESS')
              console.log(result.data)
-             this.getNotesFromServer()
+             var toast = Toast.makeText("Событие создано!");
+             toast.show();                          
+             vi.getNotesFromServer()
            }).catch(function (error) {
-             var toast = Toast.makeText("Не удалось создать событие");
-             toast.show();             
              console.log('post event error')
              console.log(error);
+             var toast = Toast.makeText("Не удалось создать событие");
+             toast.show();                          
            })  
-         }).catch(function (error) {
-           var toast = Toast.makeText("Не удалось создать событие");
-           toast.show();                        
+         }).catch(function (error) {         
            console.log('post event error')
            console.log(error);
+           var toast = Toast.makeText("Не удалось создать событие");
+           toast.show();                          
          })        
        },   
        deleteEventFromServer (eventID) {
          let vi = this
          let tempAxios = this.axiosAuthorized
-         console.log(eventID)  
-         console.log(this.serverPatterns)
-         console.log(this.serverPatterns)
-         let patternID = vi.serverPatterns[eventID].id
-         tempAxios.delete("http://planner.skillmasters.ga/api/v1/events/"+eventID)
+         tempAxios.delete(vi.APIurl+"events/"+eventID)
          .then(result => {
            var toast = Toast.makeText("Событие удалено!");
            toast.show();           
-           console.log(result)   
+           console.log(result)  
+           vi.getNotesFromServer() 
          }).catch(function (error) {
             var toast = Toast.makeText("Не удалось удалить событие");
             toast.show();           
             console.log(error);
+            vi.getNotesFromServer()
           })            
        },  
        activatePermissions (link) {
@@ -232,10 +210,10 @@ export default {
          let tempAxios = this.axiosAuthorized
          tempAxios.get(link)
          .then(result => {
-           console.log(result)
-           this.getNotesFromServer()           
+           console.log(result)      
            var toast = Toast.makeText("Права получены!");
-           toast.show();           
+           toast.show();      
+           vi.getNotesFromServer()      
          }).catch(function (error) {
           var toast = Toast.makeText("Не удалось получить права");
           toast.show();                        

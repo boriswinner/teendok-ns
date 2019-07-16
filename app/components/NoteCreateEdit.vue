@@ -147,7 +147,6 @@ export default {
           console.log(this.event.rrule)
         }
         if (+this.event.startDate > +singleEventEndDate){
-          alert(this.event.startDate + ' ' + singleEventEndDate)
           alert('Событие должно заканчиваться позже, чем началось!')
         } else{
           this.$modal.close(this.event)      
