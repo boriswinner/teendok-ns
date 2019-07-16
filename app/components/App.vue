@@ -6,6 +6,9 @@
             <ActionItem @tap="exportCalendar"
               android.systemIcon="ic_menu_save"
               text="export" android.position="actionBar" />            
+            <ActionItem @tap="importCalendarFromFS"
+              android.systemIcon="ic_menu_add"
+              text="import" android.position="actionBar" />                
         </ActionBar>
         <WrapLayout backgroundColor="white">
           <SegmentedBar class="home__calendar-mode-bar" @selectedIndexChange="changeCalendarMode">

@@ -2,6 +2,8 @@ import axios from "axios";
 var qs = require('qs');
 const fs = require("tns-core-modules/file-system");
 import { ShareFile } from 'nativescript-share-file';
+import { Mediafilepicker, FilePickerOptions } from 'nativescript-mediafilepicker';
+import { isIOS, isAndroid } from "platform";
 
 export default {
    data () {
@@ -31,6 +33,10 @@ export default {
         console.log('Starting Request', request)
         return request
       })                
+      axios.interceptors.request.use(request => {
+         console.log('Starting Request', request)
+         return request
+       })         
    },
    methods: {
       getNotesFromServer () {
@@ -210,7 +216,7 @@ export default {
          let params = [
             {
                action: 'READ',
-               entity_id: this.FirebaseUID,
+               entity_id: null,
                entity_type: 'EVENT'
             }]         
          tempAxios.post("http://planner.skillmasters.ga/api/v1/share", params)
@@ -249,6 +255,91 @@ export default {
           }).catch(function (error) {
              console.log(error);
          }) 
+       },
+       postCalendarFileToServer (calendarFile){
+         console.log(calendarFile)
+         console.log(typeof calendarFile)
+         let formData = new FormData();
+         formData.append("file", calendarFile);
+         console.log('>> formData >> ', formData);
+         let vi = this
+         axios.post("http://planner.skillmasters.ga/api/v1/import",  formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              "X-Firebase-Auth": vi.firebaseToken
+            }
+         })
+         .then((result) => {
+            console.log(result)
+         }).catch((err) => {
+            console.log(err);
+         });
+       },
+       importCalendarFromFS () {
+         let vi = this
+         let extensions = ['ics'];
+          
+         let options = {
+             android: {
+                 extensions: extensions,
+                 maxNumberFiles: 1
+             },
+             ios: {
+                 extensions: extensions,
+                 multipleSelection: true
+             }
+         };
+          
+         let mediafilepicker = new Mediafilepicker(); 
+         mediafilepicker.openFilePicker(options);
+          
+         mediafilepicker.on("getFiles", function (res) {
+             let results = res.object.get('results');
+             console.dir(results);
+             var bghttp = require("nativescript-background-http");
+             var session = bghttp.session("file-upload");              
+             var request = {
+               url: "http://planner.skillmasters.ga/api/v1/import",
+               method: "POST",
+               headers: {
+                   "Content-Type": "application/octet-stream",
+                   "X-Firebase-Auth": vi.firebaseToken
+               },
+               description: "Uploading "
+             };
+             var task = session.uploadFile(results[0].file, request);  
+             task.on("error", (res) => {
+               console.log(res)
+             });
+             task.on("responded",  (res) => {
+              console.log(res)
+            });
+             task.on("complete",  (res) => {
+              console.log(res)
+            });           
+          //    let calendarFile = fs.File.fromPath(results[0].file)
+          //    calendarFile.readText()
+          //    .then((res) => {
+          //     //  console.log(res)
+          //     //  let blob = new Blob([res.toString()], {type: 'text/plain'});
+          //     //  console.log(blob)
+          //     //  vi.postCalendarFileToServer(blob)
+          //    }).catch((err) => {
+          //     console.log(err);
+          //  });
+            //  console.log(calendarFile)
+            //  vi.postCalendarFileToServer(calendarFile)
+         });
+          
+         mediafilepicker.on("error", function (res) {
+             let msg = res.object.get('msg');
+             console.log(msg);
+         });
+          
+         mediafilepicker.on("cancel", function (res) {
+             let msg = res.object.get('msg');
+             console.log(msg);
+         });          
        }
    }
 }
