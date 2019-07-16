@@ -50,7 +50,9 @@ export default new Vuex.Store({
     getCalendarEvents: state => {
       let events = []
       state.notes.forEach(function callback(currentValue, index, array) {
-        events.push(new calendarModule.CalendarEvent(currentValue.name, new Date(currentValue.startDate), new Date(currentValue.endDate), false))
+        if (currentValue.endDate > currentValue.startDate){
+          events.push(new calendarModule.CalendarEvent(currentValue.name, new Date(currentValue.startDate), new Date(currentValue.endDate), false))
+        }
       });
       return events
     },
@@ -62,6 +64,9 @@ export default new Vuex.Store({
     },
     getFirebaseUID: state => {
       return state.firebaseUID
+    },
+    getAPIurl: state => {
+      return 'http://planner.skillmasters.ga/api/v1/'
     }
     // getNotesByDate: state => date => {
     //   return state.notes[date]

@@ -100,6 +100,7 @@
   import ActivatePermissions from '@/components/ActivatePermissions'
   import ServerCommunicationMixin from '@/components/ServerCommunicationMixin'
   import { Color } from "tns-core-modules/color";
+import { error } from 'util';
 
   var application = require('application');  
 
@@ -232,14 +233,18 @@
           },
           fullscreen: true
         }).then (data => {
-            let t = data
             console.log('!!!!!!!!!')
             console.log(data)
-            for (var property in t) {
-              console.log( property + ': ' + t[property]+'; ')
-            }            
-            this.pushNoteToServer(data.details,data.location,data.name,data.status,data.startDate, data.endDate, data.duration, data.rrule)
-            // vi.$store.commit('editNoteByIdstr', t) 
+            for (var property in data) {
+              console.log( property + ': ' + data[property]+'; ')
+            }                    
+            if (!('eventName' in data)){
+              console.log('NO EVENT NAME')
+              this.pushNoteToServer(data.details,data.location,data.name,data.status,data.startDate, data.endDate, data.duration, data.rrule)
+              // vi.$store.commit('editNoteByIdstr', t)             
+            }
+        }).catch( error => {
+          console.log(error)
         })        
       },
       tapNote(event){
@@ -254,14 +259,15 @@
             if (data == 'delete'){
               this.deleteEventFromServer(i.id)
               this.getNotesFromServer()
+            }                        
+            if (!('eventName' in data)){
+              console.log('!!!!!!!!!')
+              for (var property in data) {
+                console.log( property + ': ' + data[property]+'; ')
+              }  
+              this.updateNoteOnServer(data.id, data.patternID, data.details,data.location,data.name,data.status,data.startDate, data.endDate, data.duration, data.rrule)          
+              // vi.$store.commit('editNote', t)               
             }
-            let t = data
-            console.log('!!!!!!!!!')
-            for (var property in t) {
-              console.log( property + ': ' + t[property]+'; ')
-            }  
-            this.updateNoteOnServer(data.id, data.patternID, data.details,data.location,data.name,data.status,data.startDate, data.endDate, data.duration, data.rrule)          
-            // vi.$store.commit('editNote', t) 
         })
       },
       openShareModal(){

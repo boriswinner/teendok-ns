@@ -147,12 +147,18 @@ export default {
            .then(result => {
              console.log('POST PATTERN SUCCESS')
              console.log(result.data)
+             var toast = Toast.makeText("Событие обновлено!");
+             toast.show();             
              this.getNotesFromServer()
            }).catch(function (error) {
+             var toast = Toast.makeText("Не удалось обновить событие");
+             toast.show();                          
              console.log('post event error')
              console.log(error);
            })  
          }).catch(function (error) {
+           var toast = Toast.makeText("Не удалось обновить событие");
+           toast.show();                        
            console.log('post event error')
            console.log(error);
          })             
@@ -185,14 +191,20 @@ export default {
            }
            tempAxios.post("http://planner.skillmasters.ga/api/v1/patterns/?event_id="+eventID, params)
            .then(result => {
+             var toast = Toast.makeText("Событие создано!");
+             toast.show();             
              console.log('POST PATTERN SUCCESS')
              console.log(result.data)
              this.getNotesFromServer()
            }).catch(function (error) {
+             var toast = Toast.makeText("Не удалось создать событие");
+             toast.show();             
              console.log('post event error')
              console.log(error);
            })  
          }).catch(function (error) {
+           var toast = Toast.makeText("Не удалось создать событие");
+           toast.show();                        
            console.log('post event error')
            console.log(error);
          })        
@@ -206,8 +218,12 @@ export default {
          let patternID = vi.serverPatterns[eventID].id
          tempAxios.delete("http://planner.skillmasters.ga/api/v1/events/"+eventID)
          .then(result => {
+           var toast = Toast.makeText("Событие удалено!");
+           toast.show();           
            console.log(result)   
          }).catch(function (error) {
+            var toast = Toast.makeText("Не удалось удалить событие");
+            toast.show();           
             console.log(error);
           })            
        },  
@@ -221,6 +237,8 @@ export default {
            var toast = Toast.makeText("Права получены!");
            toast.show();           
          }).catch(function (error) {
+          var toast = Toast.makeText("Не удалось получить права");
+          toast.show();                        
           console.log(error);
         })  
        },
@@ -253,6 +271,8 @@ export default {
             file.writeText(exportedCalendarString.data.toString())
                 .then((result) => {
                    console.log('file saved')
+                   var toast = Toast.makeText("Файл записан в: "+file._path);
+                   toast.show();             
                    let shareFile = new ShareFile();   
                    shareFile.open( { 
                      path: file._path, 

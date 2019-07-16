@@ -3,7 +3,8 @@
       <ScrollView>
         <WrapLayout backgroundColor="white">
             <label textWrap="true" text="В этом меню вы можете активировать полученную ссылку доступа:"/>
-            <button class="permission__button permission__button-share" @tap="activatePermissionsButtonTap" text="Вставить ссылку и получить права"/>
+            <button class="permission__button permission__button-share" @tap="activatePermissionsTokenButtonTap" text="Вставить токен и получить права"/>
+            <button class="permission__button permission__button-share" @tap="activatePermissionsUrlButtonTap" text="Вставить ссылку и получить права"/>
         </WrapLayout>
         </ScrollView>
     </Page>
@@ -29,11 +30,23 @@ export default {
         }
     }, 
     methods: {  
-        activatePermissionsButtonTap () {
+        activatePermissionsTokenButtonTap () {
+            console.log(this.APIurl)
+            let vi = this
+            this.pasteFromClipboard().then(res => {
+                console.log(res)
+                this.activatePermissions(vi.APIurl+'share/'+res)
+            }).catch((err) => {
+            console.log(err);
+            });   
+        },        
+        activatePermissionsUrlButtonTap () {
             this.pasteFromClipboard().then(res => {
                 console.log(res)
                 this.activatePermissions(res)
-            })   
+            }).catch((err) => {
+            console.log(err);
+            });  
         },
     },
     mounted () {

@@ -8,6 +8,9 @@ export default {
        }
     },
     computed: {
+        APIurl () {
+            return this.$store.getters.getAPIurl
+        }
     },
     methods: {
         copyToClipboard(text){
