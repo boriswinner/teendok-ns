@@ -220,8 +220,12 @@
         // console.log(this.selectedWeekDays)
       },         
       openNewNoteDialog() {
-        this.$showModal(NoteCreateEdit, {fullscreen: true})
-          .then (data => {
+        this.$showModal(NoteCreateEdit, {
+          props: {
+            selectedDay: this.selectedDay
+          },
+          fullscreen: true
+        }).then (data => {
             let t = data
             console.log('!!!!!!!!!')
             console.log(data)

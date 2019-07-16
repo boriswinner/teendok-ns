@@ -65,6 +65,9 @@ export default {
           }
         }
       },
+      selectedDay: {
+        default: null
+      }
     },
     computed: {
       isByDayButtonActive (index) {
@@ -166,6 +169,10 @@ export default {
       for (var property in this.event) {
         console.log( property + ': ' + this.event[property]+'; ')
       }       
+      if (this.selectedDay){
+        this.event.startDate = this.selectedDay
+        this.event.endDate = this.selectedDay
+      }
       this.startDateForm = this.event.startDate
       this.startTimeForm = this.event.startDate
       this.durationDateForm = this.event.endDate
