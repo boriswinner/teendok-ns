@@ -22,7 +22,7 @@ export default new Vuex.Store({
   state: {
     notes: [],
     firebaseToken: null,
-    firebaseUID: null
+    firebaseUID: null,
   },
   mutations: {
     setFirebaseToken (state, token) {

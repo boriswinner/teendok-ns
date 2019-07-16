@@ -6,7 +6,8 @@
             <button v-for="(item,index) in Object.keys(actions)"  class="permission__button"
                     :class="{'permission__button-active' : actionsForm[index] == true}" :key="index+item" @tap="actionsForm[index] = !actionsForm[index]; $forceUpdate();" :text="item"/>                     
             <button class="permission__button permission__button-share" @tap="sharePermissionsButtonTap" text="Поделиться"/>
-            <label text="Здесь будет токен"/>
+            <label v-show="isShareButtonClicked" textWrap="true" text="Ссылка доступа: (нажмите на неё, чтобы скопировать)"/>
+            <label v-show="isShareButtonClicked" textWrap="true" :text="permissionsShareUrl" @tap="copyToClipboard(permissionsShareUrl)"/>
         </WrapLayout>
         </ScrollView>
     </Page>
@@ -16,6 +17,9 @@
 import { isIOS, isAndroid } from "platform";
 var application = require('application');  
 import ServerCommunicationMixin from '@/components/ServerCommunicationMixin'
+const utilsModule = require("tns-core-modules/utils/utils");
+var clipboard = require("nativescript-clipboard");
+import * as Toast from 'nativescript-toast';
 
 export default {
     mixins: [ServerCommunicationMixin],     
@@ -31,13 +35,34 @@ export default {
               'Обновление' : "UPDATE",
               'Удаление' : "DELETE",
             }, 
-            actionsForm: new Array(3).fill(false)           
+            actionsForm: new Array(3).fill(false),
+            permissionsShareUrl: '',
+            isShareButtonClicked: false           
         }
     }, 
     methods: {  
         sharePermissionsButtonTap () {
-            this.sharePermissions(null ,null, null)
-        }    
+            this.isShareButtonClicked = true
+            let permissions = []
+            this.actionsForm.forEach((element, index) => {
+                if (element == true){
+                    permissions.push(Object.values(this.actions)[index])
+                }
+            });
+            this.sharePermissions(permissions).then (data => {
+                this.permissionsShareUrl = data
+            })
+            
+        },
+        openLink (url) {
+            utilsModule.openUrl(url)
+        },    
+        copyToClipboard(text){
+            clipboard.setText(text).then(function() {
+                var toast = Toast.makeText("Скопировано!");
+                toast.show();
+            })            
+        }
     },
     mounted () {
       if (isAndroid) {

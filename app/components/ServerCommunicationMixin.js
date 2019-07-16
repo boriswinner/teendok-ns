@@ -210,18 +210,21 @@ export default {
             console.log(error);
           })            
        },   
-       sharePermissions (action, entity_id, entity_type){
-         console.log(this.FirebaseUID)
+       sharePermissions (actions){
+         let vi = this
          let tempAxios = this.axiosAuthorized
-         let params = [
-            {
-               action: 'READ',
-               entity_id: null,
-               entity_type: 'EVENT'
-            }]         
-         tempAxios.post("http://planner.skillmasters.ga/api/v1/share", params)
+         let params = []
+         actions.forEach( action => {
+           params.push({
+              action: action,
+              entity_id: null,
+              entity_type: 'EVENT'             
+           })
+         })
+         return tempAxios.post("http://planner.skillmasters.ga/api/v1/share", params)
          .then(result => {
-            console.log(result)   
+            console.log('SERVER RESULT')
+            return result.data
           }).catch(function (error) {
              console.log(error);
            })                     
