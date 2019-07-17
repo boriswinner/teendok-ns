@@ -301,19 +301,14 @@ export default {
              console.log(error);
          }) 
        },
-       postCalendarFileToServer (calendarFile){
-         console.log(calendarFile)
-         console.log(typeof calendarFile)
-         let formData = new FormData();
-         formData.append("file", calendarFile);
-         console.log('>> formData >> ', formData);
+       postCalendarStringToServer (calendarString){
+         console.log(calendarString)
          let vi = this
-         axios.post("http://planner.skillmasters.ga/api/v1/import",  formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-              "X-Firebase-Auth": vi.firebaseToken
-            }
-         })
+         let tempAxios = this.axiosAuthorized
+         let params = {
+          str: calendarString
+         }
+         tempAxios.post("http://planner.skillmasters.ga/api/v1/import/raw",  params)
          .then((result) => {
             console.log(result)
          }).catch((err) => {
@@ -341,39 +336,14 @@ export default {
          mediafilepicker.on("getFiles", function (res) {
              let results = res.object.get('results');
              console.dir(results);
-             var bghttp = require("nativescript-background-http");
-             var session = bghttp.session("file-upload");              
-             var request = {
-               url: "http://planner.skillmasters.ga/api/v1/import",
-               method: "POST",
-               headers: {
-                   "Content-Type": "application/octet-stream",
-                   "X-Firebase-Auth": vi.firebaseToken
-               },
-               description: "Uploading "
-             };
-             var task = session.uploadFile(results[0].file, request);  
-             task.on("error", (res) => {
+             let calendarFile = fs.File.fromPath(results[0].file)
+             calendarFile.readText()
+             .then((res) => {
                console.log(res)
-             });
-             task.on("responded",  (res) => {
-              console.log(res)
-            });
-             task.on("complete",  (res) => {
-              console.log(res)
-            });           
-          //    let calendarFile = fs.File.fromPath(results[0].file)
-          //    calendarFile.readText()
-          //    .then((res) => {
-          //     //  console.log(res)
-          //     //  let blob = new Blob([res.toString()], {type: 'text/plain'});
-          //     //  console.log(blob)
-          //     //  vi.postCalendarFileToServer(blob)
-          //    }).catch((err) => {
-          //     console.log(err);
-          //  });
-            //  console.log(calendarFile)
-            //  vi.postCalendarFileToServer(calendarFile)
+               vi.postCalendarStringToServer(res)
+             }).catch((err) => {
+              console.log(err);
+           });
          });
           
          mediafilepicker.on("error", function (res) {
