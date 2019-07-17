@@ -2,7 +2,7 @@
     <Page>
       <ScrollView>
         <WrapLayout backgroundColor="white">         
-            <Button text="Поделиться правами" class="edit__new-note-button" @tap="sharePermissionsWrapper()"/>      
+            <Button v-if="$options.propsData.event" text="Поделиться правами" class="edit__new-note-button" @tap="sharePermissionsWrapper()"/>      
             <StackLayout verticalAlignment="center">
                 <Label textWrap="true" class="edit__time-picker-label" text="Начало события (если событие повторяется, минимальные дата и время, в которое может начаться событие):" />
             </StackLayout>          
@@ -33,7 +33,7 @@
           <TextField v-model="event.name" class="edit__new-note-text" hint="имя события..." />
           <TextField v-model="event.details" class="edit__new-note-text" hint="описание события..."/>
           <Button text="OK" class="edit__new-note-button" @tap="closeNote"/>                   
-          <Button v-if="event" @tap="deleteNote" text="Удалить заметку" class="edit__delete-note-button"/>    
+          <Button v-if="$options.propsData.event" @tap="deleteNote" text="Удалить заметку" class="edit__delete-note-button"/>    
         </WrapLayout>
         </ScrollView>
     </Page>
