@@ -13,6 +13,7 @@
                 <GridLayout columns="2*,*" rows="*,*,*" class="managepermissions__list-item">
                     <Label row="0" col="0" class="managepermissions__list-item-note" :text="event.name" />
                     <Label row="1" col="0" class="managepermissions__list-item-desc" :text="event.details" />
+                    <Label row="1" col="0" class="managepermissions__list-item-desc" :text="event.user" />
                     <Label row="2" col="0" class="managepermissions__list-item-desc" :text="event.permissionName" />
                     <button row="0" rowSpan="3" col="1" text="Удалить" @tap="revokePermissionWrapper(event.id)"/>
                 </GridLayout>
@@ -26,6 +27,7 @@
                 <GridLayout columns="2*,*" rows="*,*,*" class="managepermissions__list-item">
                     <Label row="0" col="0" class="managepermissions__list-item-note" :text="event.name" />
                     <Label row="1" col="0" class="managepermissions__list-item-desc" :text="event.details" />
+                    <Label row="1" col="0" class="managepermissions__list-item-desc" :text="event.user" />
                     <Label row="2" col="0" class="managepermissions__list-item-desc" :text="event.permissionName" />
                     <button row="0" rowSpan="3" col="1" text="Удалить" @tap="revokePermissionWrapper(event.id)"/>
                 </GridLayout>
@@ -78,13 +80,18 @@ export default {
         getPermissionsWrapper(){
             let vi = this
             this.getPermissions(true).then( res => {
-                //console.log(res)
+                console.log(res)
                 res.forEach(permission => {
+                    let event_id = permission.entity_id
+                    let event = this.fullEvents.find((element,index) => {
+                        return element.id == event_id
+                    })                    
                     vi.getUserById(permission.user_id).then(res => {
                         let t = {
                             id: permission.id,
-                            name: "Весь календарь",
-                            details: "Пользователь: "+res.username,
+                            name: event ? event.name : "Весь календарь",
+                            details: event ? event.details : "",
+                            user: "Пользователь: "+res.username,
                             permissionName: vi.permissionsNames[permission.name]
                         }
                         this.minePermissions.push(t)
@@ -106,6 +113,7 @@ export default {
                         id: permission.id,
                         name: (event ? event.name : 'Недоступное для чтения событие'),
                         details: (event ? event.details : ''),
+                        user: "",
                         permissionName: (event ? vi.permissionsNames[permission.name] : '')
                     }
                     this.notMinePermissions.push(t)

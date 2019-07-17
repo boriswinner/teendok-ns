@@ -49,7 +49,7 @@ export default {
                     permissions.push(Object.values(this.actions)[index])
                 }
             });
-            this.sharePermissions(permissions, null).then (data => {
+            this.sharePermissions(permissions, this.event).then (data => {
                 this.permissionsShareUrl = data
             })         
         },
