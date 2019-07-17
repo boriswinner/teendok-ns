@@ -315,6 +315,19 @@ export default {
             console.log(err);
          });
        },
+       getUserById(idStr){
+         let vi = this
+         let tempAxios = this.axiosAuthorized
+         let params = {
+          user_id: idStr
+         }
+         return tempAxios.get(vi.APIurl+"user?user_id="+idStr)
+         .then(result => {
+           return result.data
+         }).catch((err) => {
+          console.log(err);
+         });
+       },
        importCalendarFromFS () {
          let vi = this
          let extensions = ['ics'];

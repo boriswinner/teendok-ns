@@ -7,7 +7,7 @@
             <SegmentedBarItem title="Мне раздали" />
         </SegmentedBar>  
 
-        <ScrollView row="1" col="0" v-show="!mode" class="managepermissions_list-wrapper">
+        <ScrollView row="1" col="0" v-show="mode" class="managepermissions_list-wrapper">
             <ListView class="managepermissions_list-wrapper" for="event in minePermissions">
                 <v-template>
                 <GridLayout columns="2*,*" rows="*,*,*" class="managepermissions__list-item">
@@ -75,19 +75,17 @@ export default {
       }      
       let vi = this
       this.getPermissions(true).then( res => {
-          console.log(res)
+          //console.log(res)
           res.forEach(permission => {
-              let event_id = permission.entity_id
-              let event = this.fullEvents.find((element,index) => {
-                  return element.id == event_id
+              vi.getUserById(permission.user_id).then(res => {
+                  let t = {
+                    id: permission.id,
+                    name: "Весь календарь",
+                    details: "Пользователь: "+res.username,
+                    permissionName: vi.permissionsNames[permission.name]
+                  }
+                  this.minePermissions.push(t)
               })
-              let t = {
-                  id: permission.id,
-                  name: event.name,
-                  details: event.details,
-                  permissionName: vi.permissionsNames[permission.name]
-              }
-              this.minePermissions.push(t)
           });
       }).catch(error => {
           console.log(error)
