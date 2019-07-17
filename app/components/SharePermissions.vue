@@ -24,6 +24,7 @@ export default {
     mixins: [ServerCommunicationMixin, HelpersMixin],     
     name: 'SharePermissions',
     props: {
+        event: null,
     },
     computed: {
     },
@@ -48,7 +49,7 @@ export default {
                     permissions.push(Object.values(this.actions)[index])
                 }
             });
-            this.sharePermissions(permissions).then (data => {
+            this.sharePermissions(permissions, null).then (data => {
                 this.permissionsShareUrl = data
             })         
         },

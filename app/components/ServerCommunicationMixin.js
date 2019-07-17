@@ -236,20 +236,24 @@ export default {
           console.log(error);
         })  
        },
-       sharePermissions (actions){
+       sharePermissions (actions, event){
          let vi = this
          let tempAxios = this.axiosAuthorized
          let params = []
          actions.forEach( action => {
            params.push({
               action: action,
-              entity_id: null,
+              entity_id: event ? event.id : null,
               entity_type: 'EVENT'             
            })
+           params.push({
+            action: action,
+            entity_id: event ? event.patternID : null,
+            entity_type: 'PATTERN'             
+         })           
          })
          return tempAxios.post("http://planner.skillmasters.ga/api/v1/share", params)
          .then(result => {
-            console.log('SERVER RESULT')
             return result.data
           }).catch(function (error) {
              console.log(error);
