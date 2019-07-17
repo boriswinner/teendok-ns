@@ -14,7 +14,7 @@
                     <Label row="0" col="0" class="managepermissions__list-item-note" :text="event.name" />
                     <Label row="1" col="0" class="managepermissions__list-item-desc" :text="event.details" />
                     <Label row="2" col="0" class="managepermissions__list-item-desc" :text="event.permissionName" />
-                    <button row="0" rowSpan="3" col="1" text="Удалить" @tap="revokePermission(event.id)"/>
+                    <button row="0" rowSpan="3" col="1" text="Удалить" @tap="revokePermissionWrapper(event.id)"/>
                 </GridLayout>
                 </v-template>
             </ListView> 
@@ -27,7 +27,7 @@
                     <Label row="0" col="0" class="managepermissions__list-item-note" :text="event.name" />
                     <Label row="1" col="0" class="managepermissions__list-item-desc" :text="event.details" />
                     <Label row="2" col="0" class="managepermissions__list-item-desc" :text="event.permissionName" />
-                    <button row="0" rowSpan="3" col="1" text="Удалить" @tap="revokePermission(event.id)"/>
+                    <button row="0" rowSpan="3" col="1" text="Удалить" @tap="revokePermissionWrapper(event.id)"/>
                 </GridLayout>
                 </v-template>
             </ListView> 
@@ -67,48 +67,60 @@ export default {
             mode: false
         }
     }, 
-    methods: {  
+    methods: { 
+        revokePermissionWrapper (event_id){
+            this.revokePermission(event_id).then(result => {
+                this.minePermissions = []
+                this.notMinePermissions = []
+                this.getPermissionsWrapper()
+            })
+        } ,
+        getPermissionsWrapper(){
+            let vi = this
+            this.getPermissions(true).then( res => {
+                //console.log(res)
+                res.forEach(permission => {
+                    vi.getUserById(permission.user_id).then(res => {
+                        let t = {
+                            id: permission.id,
+                            name: "Весь календарь",
+                            details: "Пользователь: "+res.username,
+                            permissionName: vi.permissionsNames[permission.name]
+                        }
+                        this.minePermissions.push(t)
+                    })
+                });
+                this.$forceUpdate();
+            }).catch(error => {
+                console.log(error)
+            })
+
+            this.getPermissions(false).then( res => {
+                console.log(res)
+                res.forEach(permission => {
+                    let event_id = permission.entity_id
+                    let event = this.fullEvents.find((element,index) => {
+                        return element.id == event_id
+                    })
+                    let t = {
+                        id: permission.id,
+                        name: (event ? event.name : 'Недоступное для чтения событие'),
+                        details: (event ? event.details : ''),
+                        permissionName: (event ? vi.permissionsNames[permission.name] : '')
+                    }
+                    this.notMinePermissions.push(t)
+                });
+                this.$forceUpdate();
+            }).catch(error => {
+                console.log(error)
+            }) 
+        }
     },
     mounted () {
       if (isAndroid) {
           application.android.on(application.AndroidApplication.activityBackPressedEvent, this.$modal.close);
-      }      
-      let vi = this
-      this.getPermissions(true).then( res => {
-          //console.log(res)
-          res.forEach(permission => {
-              vi.getUserById(permission.user_id).then(res => {
-                  let t = {
-                    id: permission.id,
-                    name: "Весь календарь",
-                    details: "Пользователь: "+res.username,
-                    permissionName: vi.permissionsNames[permission.name]
-                  }
-                  this.minePermissions.push(t)
-              })
-          });
-      }).catch(error => {
-          console.log(error)
-      })
-
-      this.getPermissions(false).then( res => {
-          console.log(res)
-          res.forEach(permission => {
-              let event_id = permission.entity_id
-              let event = this.fullEvents.find((element,index) => {
-                  return element.id == event_id
-              })
-              let t = {
-                  id: permission.id,
-                  name: event.name,
-                  details: event.details,
-                  permissionName: vi.permissionsNames[permission.name]
-              }
-              this.notMinePermissions.push(t)
-          });
-      }).catch(error => {
-          console.log(error)
-      })      
+      }         
+      this.getPermissionsWrapper()  
     }
 }
 </script>

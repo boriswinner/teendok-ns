@@ -258,11 +258,11 @@ export default {
        revokePermission (id){
         let vi = this
         let tempAxios = this.axiosAuthorized
-        tempAxios.delete(vi.APIurl+"permissions/"+id)
+        return tempAxios.delete(vi.APIurl+"permissions/"+id)
         .then(result => {
-          console.log(result)
           var toast = Toast.makeText("Разрешение удалено!");
-          toast.show();                    
+          toast.show();                              
+          return result
         }).catch(error => {
           var toast = Toast.makeText("Не удалось удалить разрешение...");
           toast.show();          
