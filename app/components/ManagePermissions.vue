@@ -109,14 +109,16 @@ export default {
                     let event = this.fullEvents.find((element,index) => {
                         return element.id == event_id
                     })
-                    let t = {
-                        id: permission.id,
-                        name: (event ? event.name : 'Недоступное для чтения событие'),
-                        details: (event ? event.details : ''),
-                        user: "",
-                        permissionName: (event ? vi.permissionsNames[permission.name] : '')
-                    }
-                    this.notMinePermissions.push(t)
+                    vi.getUserById(permission.owner_id).then(res => {
+                        let t = {
+                            id: permission.id,
+                            name: (event ? event.name : (isNaN(permission.entity_id) ? 'Весь календарь': 'Недоступное для чтения событие')),
+                            details: (event ? event.details : ''),
+                            user: "Пользователь: "+res.username,
+                            permissionName: vi.permissionsNames[permission.name]
+                        }
+                        this.notMinePermissions.push(t)
+                    })
                 });
                 this.$forceUpdate();
             }).catch(error => {
