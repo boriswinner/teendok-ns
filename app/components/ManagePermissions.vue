@@ -3,8 +3,8 @@
         <ActionBar title="Настройки прав..."/>     
       <GridLayout columns="*" rows="*,10*">
         <SegmentedBar row="0" col="0" @selectedIndexChange="mode = !mode" class="managepermissions_mode-bar">
-            <SegmentedBarItem title="Мне раздали" />
             <SegmentedBarItem title="Я раздал" />
+            <SegmentedBarItem title="Мне раздали" />
         </SegmentedBar>  
 
         <ScrollView row="1" col="0" v-show="!mode" class="managepermissions_list-wrapper">
