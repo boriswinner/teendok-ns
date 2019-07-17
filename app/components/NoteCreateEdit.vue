@@ -64,7 +64,7 @@ export default {
             status: null,
             location: null,
             timezone: null,
-            rrule: null
+            rrule: null,
           }
         }
       },
@@ -124,7 +124,7 @@ export default {
           this.durationTimeForm.getMinutes(),
         )
         this.event.duration = singleEventEndDate - this.event.startDate
-        this.event.endDate = null
+        this.event.endDate = singleEventEndDate
         if (this.repeatFrequencyForm){
           this.event.endDate = new Date(
             this.patternEndDateForm.getFullYear(),
