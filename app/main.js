@@ -10,6 +10,17 @@ import LoginPage from './components/LoginPage'
 Vue.registerElement('RadCalendar', () => require('nativescript-ui-calendar').RadCalendar)
 // Vue.registerElement('RadListView', () => require('nativescript-ui-listview').RadListView)
 
+Vue.registerElement(
+  'CheckBox',
+  () => require('nativescript-checkbox').CheckBox,
+  {
+    model: {
+      prop: 'checked',
+      event: 'checkedChange'
+    }
+  }
+);
+
 if(TNS_ENV !== 'production') {
   Vue.use(VueDevtools)
 }

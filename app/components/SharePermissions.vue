@@ -2,9 +2,9 @@
     <Page>
       <ScrollView>
         <WrapLayout backgroundColor="white">
-            <label text="Выберите права, которыми вы хотите поделиться:"/>
-            <button v-for="(item,index) in Object.keys(actions)"  class="permission__button"
-                    :class="{'permission__button-active' : actionsForm[index] == true}" :key="index+item" @tap="actionsForm[index] = !actionsForm[index]; $forceUpdate();" :text="item"/>                     
+            <label textWrap="true" text="Выберите права, которыми вы хотите поделиться:"/>
+            <check-box v-for="(item,index) in Object.keys(actions)" :key="index+item"  :text="item"
+              class="permission__checkbox" :checked="actionsForm[index] == true"  @checkedChange="actionsForm[index] = !actionsForm[index]; $forceUpdate(); "/>                     
             <button class="permission__button permission__button-share" @tap="sharePermissionsButtonTap" text="Поделиться"/>
             <label v-show="isShareButtonClicked" textWrap="true" text="Ссылка доступа: (нажмите на неё, чтобы скопировать)"/>
             <label v-show="isShareButtonClicked" textWrap="true" :text="permissionsShareUrl" @tap="copyToClipboard(permissionsShareUrl)"/>
@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import { CheckBox } from 'nativescript-checkbox';
 import { isIOS, isAndroid } from "platform";
 var application = require('application');  
 import ServerCommunicationMixin from '@/components/ServerCommunicationMixin'
@@ -37,7 +38,8 @@ export default {
             }, 
             actionsForm: new Array(3).fill(false),
             permissionsShareUrl: '',
-            isShareButtonClicked: false           
+            isShareButtonClicked: false,
+            isChecked: false      
         }
     }, 
     methods: {  
@@ -65,14 +67,12 @@ export default {
 <style scoped lang="scss">
 
     .permission {
-      &__button {
+      &__checkbox {
           width: 100%;
       }
-      &__button-active {
-        background-color: aqua
-      }
       &__button-share {
-          background-color: blueviolet
+          background-color: aqua;
+          width: 100%;
       }        
     }
 </style>
