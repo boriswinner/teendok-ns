@@ -2,6 +2,7 @@
     <Page>
       <ScrollView>
         <WrapLayout backgroundColor="white">         
+            <Button text="Поделиться правами" class="edit__new-note-button" @tap="sharePermissionsWrapper()"/>      
             <StackLayout verticalAlignment="center">
                 <Label textWrap="true" class="edit__time-picker-label" text="Начало события (если событие повторяется, минимальные дата и время, в которое может начаться событие):" />
             </StackLayout>          
@@ -44,9 +45,11 @@ var application = require('application');
 import ServerCommunicationMixin from '@/components/ServerCommunicationMixin'
 import HelpersMixin from './HelpersMixin';
 import { duration } from 'nativescript-toast';
+import SharePermissions from './SharePermissions.vue';
 
 export default {
-    mixins: [ServerCommunicationMixin, HelpersMixin],     
+    mixins: [ServerCommunicationMixin, HelpersMixin],   
+    components: [SharePermissions],  
     name: 'NoteCreateEdit',
     props: {
       event: {
@@ -157,6 +160,13 @@ export default {
       deleteNote () {
         this.$modal.close('delete')      
       },  
+      sharePermissionsWrapper () {
+        this.$showModal(SharePermissions, {
+          props: {
+            event: this.event
+          },
+          }).then (data => {})         
+      }
     },
     mounted () {
       if (isAndroid) {
