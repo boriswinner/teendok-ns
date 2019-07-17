@@ -6,8 +6,8 @@
             <check-box v-for="(item,index) in Object.keys(actions)" :key="index+item"  :text="item"
               class="permission__checkbox" :checked="actionsForm[index] == true"  @checkedChange="actionsForm[index] = !actionsForm[index]; $forceUpdate(); "/>                     
             <button class="permission__button permission__button-share" @tap="sharePermissionsButtonTap" text="Поделиться"/>
-            <label v-show="isShareButtonClicked" textWrap="true" text="Ссылка доступа: (нажмите на неё, чтобы скопировать)"/>
-            <label v-show="isShareButtonClicked" textWrap="true" :text="permissionsShareUrl" @tap="copyToClipboard(permissionsShareUrl)"/>
+            <label v-show="isShareButtonClicked" textWrap="true" text="Токен доступа: (скопирован в буфер обмена)"/>
+            <label v-show="isShareButtonClicked" textWrap="true" :text="permissionsShareUrl"/>
         </WrapLayout>
         </ScrollView>
     </Page>
@@ -53,6 +53,7 @@ export default {
             });
             this.sharePermissions(permissions, this.event).then (data => {
                 this.permissionsShareUrl = data
+                this.copyToClipboard(this.permissionsShareUrl)
             })         
         },
     },

@@ -254,7 +254,7 @@ export default {
          })
          return tempAxios.post("http://planner.skillmasters.ga/api/v1/share", params)
          .then(result => {
-            return result.data
+            return result.data.split("/").pop()
           }).catch(function (error) {
              console.log(error);
            })                     
