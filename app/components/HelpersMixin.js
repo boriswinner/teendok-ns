@@ -68,6 +68,23 @@ export default {
         },    
         getKeyByValue(object, value) {
             return Object.keys(object).find(key => object[key] === value);
-          },                  
+        },                  
+        sameWeekDates(current) {
+            var week= new Array(); 
+            let t = new Date(current);
+            let day = current.getDay()
+            if (day == 0){
+              day = 7
+            }
+            day--
+            t.setDate((current.getDate() - day));
+            for (var i = 0; i < 7; i++) {
+                week.push(
+                    new Date(t)
+                ); 
+                t.setDate(t.getDate() +1);
+            }
+            return week;        
+        },        
     }
 }
