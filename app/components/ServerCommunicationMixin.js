@@ -289,14 +289,6 @@ export default {
                    shareFile.open( { 
                      path: file._path, 
                      intentTitle: 'Отправить экспортированный календарь:', // optional Android
-                     rect: { // optional iPad
-                         x: 110,
-                         y: 110,
-                         width: 0,
-                         height: 0
-                     },
-                     options: true, // optional iOS
-                     animated: true // optional iOS
                  });                                   
                 }).catch((err) => {
                     console.log(err);

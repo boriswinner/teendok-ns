@@ -125,14 +125,7 @@
         return this.$store.getters.getFullEvents
       },
       selectedDayFullEvents (){
-        let vi = this;
-        let notes =  this.fullEvents.filter(function (evt) {
-          // adding + is a hack to compare dates, also we dont handle timezones
-          return ((+vi.dateWithoutTime(evt.startDate) <= +vi.dateWithoutTime(vi.selectedDay) &&
-                   +vi.dateWithoutTime(evt.endDate) >= +vi.dateWithoutTime(vi.selectedDay)))
-        })
-        notes.sort((a,b) => (a.startDate > b.startDate) ? 1 : ((b.startDate > a.startDate) ? -1 : 0))      
-        return notes
+        return this.fullEventsOfDay(this.selectedDay)
       },
       selectedWeekNotes (){
         //breaks events into different objects for every hour due to the grid
@@ -202,14 +195,7 @@
         return week;        
       },
       fullEventsOfDay (day){
-        let vi = this;
-        let notes =  this.fullEvents.filter(function (evt) {
-          // adding + is a hack to compare dates, also we dont handle timezones
-          return ((+vi.dateWithoutTime(evt.startDate) <= +vi.dateWithoutTime(day) &&
-                   +vi.dateWithoutTime(evt.endDate) >= +vi.dateWithoutTime(day)))
-        })
-        notes.sort((a,b) => (a.startDate > b.startDate) ? 1 : ((b.startDate > a.startDate) ? -1 : 0))      
-        return notes
+        return this.$store.getters.getFullEventsOfDay(day)
       },      
       changeCalendarMode(bar){
         this.calendarMode = bar.object.selectedIndex

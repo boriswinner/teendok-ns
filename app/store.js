@@ -17,6 +17,12 @@ const NSVuexPersistent = store => {
   })
  };
 
+ function dateWithoutTime (date){
+    var d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    return d;        
+  }     
+
 
 export default new Vuex.Store({
   state: {
@@ -59,6 +65,17 @@ export default new Vuex.Store({
     getFullEvents: state => {
       return state.notes
     },    
+    getFullEventsOfDay(state) {
+      return day => {
+        let events =  state.notes.filter(function (evt) {
+          // adding + is a hack to compare dates, also we dont handle timezones
+          return ((+dateWithoutTime(evt.startDate) <= +dateWithoutTime(day) &&
+                   +dateWithoutTime(evt.endDate) >= +dateWithoutTime(day)))
+        })
+        events.sort((a,b) => (a.startDate > b.startDate) ? 1 : ((b.startDate > a.startDate) ? -1 : 0))      
+        return events        
+      }
+    },
     getFirebaseToken: state => {
       return state.firebaseToken;
     },
