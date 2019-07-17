@@ -30,8 +30,7 @@
             :eventSource="calendarEvents"
             eventsViewMode="None" 
             selectionMode="Single" 
-            viewMode="Month"    
-            :monthViewStyle='monthViewStyle'                       
+            viewMode="Month"                        
           ></RadCalendar>  
           <RadCalendar 
             v-show="calendarMode === 1"
@@ -155,16 +154,7 @@
         dayEventsViewStyle.timeLabelFormat = 'HH:mm';
         t.dayEventsViewStyle = dayEventsViewStyle;
         return t
-      },
-      monthViewStyle(){
-        let t = new calendarModule.CalendarMonthViewStyle()
-        let dayCellStyle = new calendarModule.DayCellStyle()
-        dayCellStyle.showEventsText = false
-        dayCellStyle.eventTextColor = new Color("#745151");
-        dayCellStyle.cellTextColor = new Color("#745151");
-        t.dayCellStyle  = dayCellStyle
-        return t
-      }   
+      },   
     },
     data () {
       return {
