@@ -15,6 +15,9 @@
             <ActionItem @tap="openPermissionsManage"
               android.systemIcon="ic_menu_preferences"
               text="import" android.position="actionBar" />                                            
+            <ActionItem @tap="refreshEvents"
+              android.systemIcon="ic_menu_rotate"
+              text="import" android.position="actionBar" />                   
         </ActionBar>
         <WrapLayout backgroundColor="white">
           <SegmentedBar class="home__calendar-mode-bar" @selectedIndexChange="changeCalendarMode">
@@ -227,7 +230,10 @@
           props: {
           },
           }).then (data => {})         
-      } 
+      }, 
+      refreshEvents () {
+        this.getNotesFromServer()
+      }
     },
     created() {
       this.selectedDay = new Date();
