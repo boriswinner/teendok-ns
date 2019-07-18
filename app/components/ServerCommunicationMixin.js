@@ -54,7 +54,7 @@ export default {
                map[obj.id] = obj;
                return map;
            }, {});        
-           let event_ids = result.data.data.map(a => parseInt(a.id))   
+           let event_ids = result.data.data.map(a => parseInt(a.id, 10))   
            return tempAxios.get(vi.APIurl+"events/instances", {
              params: {
                "id": event_ids,
