@@ -45,8 +45,10 @@
           <ScrollView v-if="calendarMode === 1" orientation="vertical" class="home__week-wrapper"> 
             <StackLayout>     
               <GridLayout backgroundColor="white" columns="*, *, *, *, *, *, *, *" rows="60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60">
-              <Label v-for = "(item, index) in ['00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00']" :key="index" :text="item" :row="index" col="0" backgroundColor="#ffd0c7"/>
-              <Label v-for= "(item, index) in selectedWeekNotes" class="home__weekview_cell" :key="'event'+index" :col="item.column+1" :row="item.row" :text="item.title" backgroundColor="#dbc7ff" :style="{'margin-top': item.marginTop.toString(), 'margin-bottom': item.marginBottom.toString()}"/>                    
+              <Label v-for = "(item, index) in hoursOfDay" :key="index" :text="item" class="home__weekview-time" :row="index" col="0"/>
+              <Label v-for= "(item, index) in selectedWeekNotes" class="home__weekview_cell" :key="'event'+index" :col="item.column+1" :row="item.row" :rowSpan="item.rowspan"
+                             :text="item.title" :style="{'margin-top': item.marginTop.toString(), 'margin-bottom': item.marginBottom.toString()}"
+                             :class="{'home__weekview_cell_even': index % 2}" textWrap = "true"/>                    
               </GridLayout>
             </StackLayout>
           </ScrollView>
@@ -134,18 +136,18 @@
           let t = vi.fullEventsOfDay(item)
           if (t.length >= 0){
             for (let i = 0; i < t.length; ++i){
-              for (let j = t[i].startDate.getHours(); j <= t[i].endDate.getHours() ; ++j){
                 ev.push ({
                   column: index,
-                  row: j,
-                  title: j ===  t[i].startDate.getHours() ? t[i].name : '',
-                  marginTop: j === t[i].startDate.getHours() ? t[i].startDate.getMinutes() : 0,
-                  marginBottom: j === t[i].endDate.getHours() ? t[i].endDate.getMinutes() : 0,
-                })
-              }
+                  row: t[i].startDate.getHours(),
+                  title: t[i].name,
+                  marginTop: t[i].startDate.getMinutes(),
+                  marginBottom: 60 - t[i].endDate.getMinutes(),
+                  rowspan: t[i].endDate.getHours() + (t[i].endDate.getHours() > 0 ? 1 : 0) - t[i].startDate.getHours(),
+                })              
             }
           }
         })
+        console.log(ev)
         return ev
       },   
       dayViewStyle(){
@@ -164,26 +166,10 @@
         calendarMode: {
           default: 0
         },
+        hoursOfDay: ['00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00']
       }
     },
     methods: {
-      sameWeekDates(current) {
-        var week= new Array(); 
-        let t = new Date(current);
-        let day = current.getDay()
-        if (day == 0){
-          day = 7
-        }
-        day--
-        t.setDate((current.getDate() - day));
-        for (var i = 0; i < 7; i++) {
-            week.push(
-                new Date(t)
-            ); 
-            t.setDate(t.getDate() +1);
-        }
-        return week;        
-      },
       fullEventsOfDay (day){
         return this.$store.getters.getFullEventsOfDay(day)
       },      
@@ -345,8 +331,19 @@
         height: 50%;
       }
 
-      &__weekview_cell {
-        
+      &__weekview-time{
+        background-color: beige;
+        border-width: 2px;
+        border-color: black;     
+        text-align: center;   
       }
+      &__weekview_cell {
+        background-color: #cfeac8;
+        border-width: 2px;
+        border-color: black;
+      }
+      &__weekview_cell_even {
+        background-color: #a6ef94;
+      }      
     }
 </style>
