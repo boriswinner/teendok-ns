@@ -36,9 +36,9 @@
             <StackLayout>     
               <GridLayout backgroundColor="white" columns="*, *, *, *, *, *, *, *" rows="60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60">
               <Label v-for = "(item, index) in hoursOfDay" :key="index" :text="item" class="home__weekview-time" :row="index" col="0"/>
-              <Label v-for= "(item, index) in selectedWeekNotes" class="home__weekview_cell" :key="'event'+index" :col="item.column+1" :row="item.row" :rowSpan="item.rowspan"
+              <Label v-for= "(item, index) in selectedWeekNotesWithStylingInformation" class="home__weekview_cell" :key="'event'+index" :col="item.column+1" :row="item.row" :rowSpan="item.rowspan"
                              :text="item.title" :style="{'margin-top': item.marginTop.toString(), 'margin-bottom': item.marginBottom.toString()}"
-                             :class="{'home__weekview_cell_even': index % 2}" textWrap = "true"/>                    
+                             :class="{'home__weekview_cell_even': index % 2}" textWrap = "true" @tap="tapNote(item)"/>                    
               </GridLayout>
             </StackLayout>
           </ScrollView>                            
@@ -106,7 +106,7 @@
       selectedDayFullEvents (){
         return this.fullEventsOfDay(this.selectedDay)
       },
-      selectedWeekNotes (){
+      selectedWeekNotesWithStylingInformation (){
         //breaks events into different objects for every hour due to the grid
         let vi = this
         let ev = []
@@ -114,14 +114,13 @@
           let t = vi.fullEventsOfDay(item)
           if (t.length >= 0){
             for (let i = 0; i < t.length; ++i){
-                ev.push ({
-                  column: index,
-                  row: t[i].startDate.getHours(),
-                  title: t[i].name,
-                  marginTop: t[i].startDate.getMinutes(),
-                  marginBottom: 60 - t[i].endDate.getMinutes(),
-                  rowspan: t[i].endDate.getHours() + (t[i].endDate.getHours() > 0 ? 1 : 0) - t[i].startDate.getHours(),
-                })              
+                  t[i].column = index
+                  t[i].row = t[i].startDate.getHours()
+                  t[i].title = t[i].name
+                  t[i].marginTop = t[i].startDate.getMinutes()
+                  t[i].marginBottom = 60 - t[i].endDate.getMinutes()
+                  t[i].rowspan = t[i].endDate.getHours() + (t[i].endDate.getHours() > 0 ? 1 : 0) - t[i].startDate.getHours()
+                  ev.push(t[i])
             }
           }
         })
@@ -188,8 +187,9 @@
         })        
       },
       tapNote(event){
+        console.log(event)
         let vi = this
-        let i = event.item
+        let i = 'item' in event ? event.item : event
         this.$showModal(NoteCreateEdit, {
           props: {
             event: i
