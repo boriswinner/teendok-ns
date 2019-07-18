@@ -23,26 +23,16 @@
             <SegmentedBarItem title="День" />
           </SegmentedBar>          
           <RadCalendar 
-            v-show="calendarMode === 0"
-            class="home__calendar" id="calendarMonth" ref="calendarMonth"
+            :class="{'home__calendar': calendarMode == 'Month', 'home__calendar-week': calendarMode == 'Week', 'home__calendar-day': calendarMode == 'Day'}" 
+            id="calendar" ref="calendar"
             @dateSelected="onDateSelected"
             @loaded="disableCalendarGestures"
             :eventSource="calendarEvents"
             eventsViewMode="None" 
             selectionMode="Single" 
-            viewMode="Month"                        
+            :viewMode = "calendarMode"                       
           ></RadCalendar>  
-          <RadCalendar 
-            v-show="calendarMode === 1"
-            class="home__calendar-week" id="calendarWeek" ref="calendarWeek"
-            @loaded="disableCalendarGestures"
-            @dateSelected="onDateSelected"
-            :eventSource="calendarEvents"
-            eventsViewMode="Inline" 
-            selectionMode="Single" 
-            viewMode="Week"              
-          ></RadCalendar>     
-          <ScrollView v-if="calendarMode === 1" orientation="vertical" class="home__week-wrapper"> 
+          <ScrollView v-show="calendarMode === 'Week'" orientation="vertical" class="home__week-wrapper"> 
             <StackLayout>     
               <GridLayout backgroundColor="white" columns="*, *, *, *, *, *, *, *" rows="60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60">
               <Label v-for = "(item, index) in hoursOfDay" :key="index" :text="item" class="home__weekview-time" :row="index" col="0"/>
@@ -51,20 +41,8 @@
                              :class="{'home__weekview_cell_even': index % 2}" textWrap = "true"/>                    
               </GridLayout>
             </StackLayout>
-          </ScrollView>
-          
-          <RadCalendar 
-            v-show="calendarMode === 2"
-            class="home__calendar-day" id="calendarDay" ref="calendarDay"
-            @loaded="disableCalendarGestures"
-            @dateSelected="onDateSelected"
-            :eventSource="calendarEvents"
-            eventsViewMode="Inline" 
-            selectionMode="Single" 
-            viewMode="Day"      
-            :dayViewStyle='dayViewStyle'       
-          ></RadCalendar>                              
-          <ScrollView v-show="calendarMode === 0" class="home__notes-list-wrapper">
+          </ScrollView>                            
+          <ScrollView v-show="calendarMode === 'Month'" class="home__notes-list-wrapper">
             <ListView for="event in selectedDayFullEvents" class="home__notes-list" @itemTap="tapNote">
               <v-template>
                 <WrapLayout class="home__notes-list-item">
@@ -163,9 +141,7 @@
         selectedDay: {
           type: Date,
         },
-        calendarMode: {
-          default: 0
-        },
+        calendarMode: 'Month',
         hoursOfDay: ['00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00']
       }
     },
@@ -174,7 +150,16 @@
         return this.$store.getters.getFullEventsOfDay(day)
       },      
       changeCalendarMode(bar){
-        this.calendarMode = bar.object.selectedIndex
+        let index = bar.object.selectedIndex
+        if (index == 0){
+          this.calendarMode = "Month"
+        }      
+        if (index == 1){
+          this.calendarMode = "Week"
+        }      
+        if (index == 2){
+          this.calendarMode = "Day"
+        }                      
       },
       onDateSelected(args) {
         this.selectedDay = args.date
@@ -284,6 +269,7 @@
       &__calendar-week {
         width: 87.5%;
         margin-left: 12.5%;
+        height: 20%;
       }            
 
       &__calendar-day {
@@ -328,7 +314,7 @@
       }      
 
       &__week-wrapper {
-        height: 50%;
+        height: 60%;
       }
 
       &__weekview-time{
