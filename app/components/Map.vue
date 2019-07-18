@@ -4,7 +4,7 @@
         <GridLayout>
             <label :text="location"/>
                 <Mapbox
-                    accessToken="YOUR-ACCESS-TOKEN-HERE"
+                    accessToken="pk.eyJ1IjoiYm9yaXN3aW5uZXIiLCJhIjoiY2p5OGEzNWp4MDdnazNtbzBmZTZzM3c3cyJ9.WU1xX0VyUITsi8YTygl7CQ"
                     mapStyle="traffic_day"
                     :latitude="location.latitude"
                     :longitude="location.longtitude"
@@ -36,6 +36,7 @@ export default {
     data (){
         return {
             location: {
+                //это местоположение дефолтное для либы карты
                 latitude: "37.7397",
                 longtitude: "-121.4252"
             },
@@ -50,9 +51,12 @@ export default {
                 if (loc) {
                     vi.location.latitude = loc.latitude
                     vi.location.longtitude = loc.longitude
-                    console.log('1111111111111111111111111111111111111')
-                    console.log(vi.location.latitude)
-                    console.log(vi.location.longtitude)              
+                    args.map.setCenter(
+                        {
+                            lat: parseFloat(vi.location.latitude), // mandatory
+                            lng: parseFloat(vi.location.longtitude), // mandatory
+                        }
+                    );                                         
                 }          
             }).catch(err => {
                 console.log(err)
