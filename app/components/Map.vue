@@ -1,9 +1,9 @@
 <template>
     <Page class="page">
-        <ActionBar class="action-bar" title="Vue Mapbox Example"></ActionBar>
-        <GridLayout>
-            <label :text="location"/>
+        <GridLayout rows="6*, *" columns="*">
                 <Mapbox
+                    row="0"
+                    col="0"
                     accessToken="pk.eyJ1IjoiYm9yaXN3aW5uZXIiLCJhIjoiY2p5OGEzNWp4MDdnazNtbzBmZTZzM3c3cyJ9.WU1xX0VyUITsi8YTygl7CQ"
                     mapStyle="traffic_day"
                     :latitude="location.latitude"
@@ -17,6 +17,7 @@
                     disableTilt="false"
                     @mapReady="onMapReady($event)">
                 </Mapbox>
+                <Button row="1" column="0" text="ОК" @tap="sendMarker"/>
         </GridLayout>
     </Page>
 </template>
@@ -30,6 +31,7 @@ var application = require('application');
 export default {   
     name: 'Map',
     props: {
+        eventMarker: null
     },
     computed: {
     },
@@ -39,15 +41,18 @@ export default {
                 //это местоположение дефолтное для либы карты
                 latitude: "37.7397",
                 longtitude: "-121.4252",
-                eventMarker: null,
                 isEventCreated: true
             },
         }
     }, 
     methods: {   
         onMapReady(args) {
+            let vi = this            
+            if (vi.eventMarker){
+                vi.isEventCreated = true
+                args.map.addMarkers([vi.eventMarker]);  
+            }
             geolocation.enableLocationRequest();
-            let vi = this
             geolocation.getCurrentLocation({ desiredAccuracy: Accuracy.high, maximumAge: 5000, timeout: 20000 })
             .then( loc => {
                 if (loc) {
@@ -55,8 +60,8 @@ export default {
                     vi.location.longtitude = parseFloat(loc.longitude)
                     args.map.setCenter(
                         {
-                            lat: vi.location.latitude,
-                            lng: vi.location.longtitude,
+                            lat: vi.eventMarker ? vi.eventMarker.lat : vi.location.latitude,
+                            lng: vi.eventMarker ? vi.eventMarker.lng : vi.location.longtitude,
                         }
                     );
                     args.map.setOnMapClickListener((point) => {
@@ -77,9 +82,13 @@ export default {
             }).catch(err => {
                 console.log(err)
             })
+        },
+        sendMarker(){
+            this.$modal.close(this.eventMarker)     
         }            
     },
     mounted () {
+      console.log(this.eventMarker)
       if (isAndroid) {
           application.android.on(application.AndroidApplication.activityBackPressedEvent, this.$modal.close);
       }                     
