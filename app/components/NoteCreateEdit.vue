@@ -1,8 +1,8 @@
 <template>
     <Page>
       <ScrollView>
-        <WrapLayout backgroundColor="white">         
-            <Button v-if="$options.propsData.event" text="Поделиться правами" class="edit__new-note-button" @tap="sharePermissionsWrapper()"/>      
+        <WrapLayout backgroundColor="white">                          
+            <Button v-if="$options.propsData.event" text="Поделиться правами" class="edit__new-note-button" @tap="sharePermissionsWrapper()"/> 
             <StackLayout verticalAlignment="center">
                 <Label textWrap="true" class="edit__time-picker-label" text="Начало события (если событие повторяется, минимальные дата и время, в которое может начаться событие):" />
             </StackLayout>          
@@ -30,6 +30,7 @@
             <DatePicker v-show="repeatFrequencyForm" class="edit__time-picker" v-model="patternEndDateForm" /> 
             <TimePicker v-show="repeatFrequencyForm" class="edit__time-picker" @loaded="setTimePicker24h" v-model="patternEndTimeForm" />            
             <!-- <TextField v-show="repeatFrequencyForm" class="edit__new-note-text" keyboardType="number" v-model="repeatCountForm" hint="(Опционально) Введите количество повторений..." /> -->
+          <Button @tap="openMapWrapper" text="Добавить геолокацию" class="edit__new-note-text"/>  
           <TextField v-model="event.name" class="edit__new-note-text" hint="имя события..." />
           <TextField v-model="event.details" class="edit__new-note-text" hint="описание события..."/>
           <Button text="OK" class="edit__new-note-button" @tap="closeNote"/>                   
@@ -46,7 +47,7 @@ import ServerCommunicationMixin from '@/components/ServerCommunicationMixin'
 import HelpersMixin from './HelpersMixin';
 import { duration } from 'nativescript-toast';
 import SharePermissions from './SharePermissions.vue';
-
+import MapVue from './Map.vue';
 export default {
     mixins: [ServerCommunicationMixin, HelpersMixin],   
     components: [SharePermissions],  
@@ -166,6 +167,11 @@ export default {
             event: this.event
           },
           }).then (data => {})         
+      },
+      openMapWrapper () {
+        this.$showModal(MapVue, {
+          props: {
+          }}).then (data => {})            
       }
     },
     mounted () {

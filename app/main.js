@@ -21,6 +21,8 @@ Vue.registerElement(
   }
 );
 
+Vue.registerElement("Mapbox", () => require("nativescript-mapbox").MapboxView)
+
 if(TNS_ENV !== 'production') {
   Vue.use(VueDevtools)
 }
