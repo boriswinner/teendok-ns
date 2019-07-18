@@ -38,7 +38,9 @@ export default {
             location: {
                 //это местоположение дефолтное для либы карты
                 latitude: "37.7397",
-                longtitude: "-121.4252"
+                longtitude: "-121.4252",
+                eventMarker: null,
+                isEventCreated: true
             },
         }
     }, 
@@ -49,14 +51,28 @@ export default {
             geolocation.getCurrentLocation({ desiredAccuracy: Accuracy.high, maximumAge: 5000, timeout: 20000 })
             .then( loc => {
                 if (loc) {
-                    vi.location.latitude = loc.latitude
-                    vi.location.longtitude = loc.longitude
+                    vi.location.latitude = parseFloat(loc.latitude)
+                    vi.location.longtitude = parseFloat(loc.longitude)
                     args.map.setCenter(
                         {
-                            lat: parseFloat(vi.location.latitude), // mandatory
-                            lng: parseFloat(vi.location.longtitude), // mandatory
+                            lat: vi.location.latitude,
+                            lng: vi.location.longtitude,
                         }
-                    );                                         
+                    );
+                    args.map.setOnMapClickListener((point) => {
+                        let markerData = {
+                                lat: point.lat,
+                                lng: point.lng,    
+                                title: "Местоположение события",
+                            }
+                        if (!vi.isEventCreated){
+                            vi.eventMarker = markerData
+                            vi.isEventCreated = true                            
+                            args.map.addMarkers([vi.eventMarker]);                                                     
+                        } else {
+                            vi.eventMarker.update(markerData)
+                        }
+                    });                                                                                
                 }          
             }).catch(err => {
                 console.log(err)
