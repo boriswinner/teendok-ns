@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@vue/devtools": "^5.0.6",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "email-validator": "^2.0.4",
     "nativescript-background-http": "^3.4.1",
     "nativescript-calendar-weekview": "^1.0.6",
