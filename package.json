@@ -36,7 +36,7 @@
     "nativescript-vue": "^2.0.0",
     "nativescript-vue-devtools": "^1.2.0",
     "nativescript-vuex-persistent": "^1.2.0",
-    "qs": "^6.7.0",
+    "qs": "^6.7.3",
     "tns-core-modules": "^5.4.2",
     "vuex": "^3.0.1"
   },
